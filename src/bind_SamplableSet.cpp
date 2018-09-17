@@ -37,8 +37,8 @@ typedef tuple<int,int,int> Edge;
 PYBIND11_MODULE(SamplableSet, m)
 {
     m.doc() = R"pbdoc(
-        SamplableSet
-        ------------
+        EdgeSamplableSet
+        -----------------
 
         Classes of set with an efficient sampling option.
 
@@ -46,6 +46,8 @@ PYBIND11_MODULE(SamplableSet, m)
 
         .. autosummary::
            :toctree: _generate
+
+
            EdgeSamplableSet.__init__
            EdgeSamplableSet.size
            EdgeSamplableSet.count
@@ -53,8 +55,6 @@ PYBIND11_MODULE(SamplableSet, m)
            EdgeSamplableSet.insert
            EdgeSamplableSet.set_weight
            EdgeSamplableSet.erase
-
-
     )pbdoc";
 
     py::class_<SamplableSetCR<Edge> >(m, "EdgeSamplableSet")

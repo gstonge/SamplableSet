@@ -1,0 +1,7 @@
+EdgeSamplableSet
+****************
+.. currentmodule:: SamplableSet
+.. autoclass:: EdgeSamplableSet
+   :members:
+
+   .. automethod:: __init__
