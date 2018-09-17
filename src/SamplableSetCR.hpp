@@ -57,8 +57,10 @@ public:
 
     //Accessors
     std::size_t size() const {return position_map_.size();}
-    std::size_t inline count(const T& element) const {return position_map_.count(element);}
-    const T& sample() const;
+    std::size_t inline count(const T& element) const
+        {return position_map_.count(element);}
+    std::optional<T> sample() const;
+    double total_weight() const {return sampling_tree_.get_value();}
 
     //Mutators
     void insert(const T& element, double weight = 0);
@@ -96,7 +98,7 @@ SamplableSetCR<T>::SamplableSetCR(double min_weight, double max_weight,
 }
 
 template <typename T>
-const T& SamplableSetCR<T>::sample() const
+std::optional<T> SamplableSetCR<T>::sample() const
 {
     if (sampling_tree_.get_value() > 0)
     {
@@ -107,15 +109,19 @@ const T& SamplableSetCR<T>::sample() const
         {
             in_group_index = floor(random_01_(gen_)*propensity_group_vector_.at(
                         group_index).size());
-            if (random_01_(gen_) >
+            if (random_01_(gen_) <
                     propensity_group_vector_.at(group_index).at(
-                        in_group_index).second/max_propensity_vector_.at(
-                            group_index))
+                        in_group_index).second/(max_propensity_vector_.at(
+                            group_index)))
             {
                 element_not_chosen = false;
             }
         }
         return std::get<0>(propensity_group_vector_.at(group_index).at(in_group_index));
+    }
+    else
+    {
+        return std::nullopt;
     }
 }
 
@@ -140,10 +146,8 @@ void SamplableSetCR<T>::insert(const T& element, double weight)
 template <typename T>
 void SamplableSetCR<T>::set_weight(const T& element, double weight)
 {
-    const SSetPosition& position = position_map_.at(element);
-    double old_weight = propensity_group_vector_[position.first][position.second].second;
-    propensity_group_vector_[position.first][position.second].second = weight;
-    sampling_tree_.update_value(position.first, weight-old_weight);
+    erase(element);
+    insert(element, weight);
 }
 
 //Remove element from the set

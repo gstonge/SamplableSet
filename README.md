@@ -6,13 +6,7 @@ This family of classes is very useful when one needs to udpate dynamically (inse
 
 ## Requirements
 
-**On Unix (Linux, OS X)**
-
-* A compiler with C++11 support
-
-**On Windows**
-
-* Visual Studio 2015 (required for all Python versions)
+* A compiler with C++17 support
 
 ## Installation
 
