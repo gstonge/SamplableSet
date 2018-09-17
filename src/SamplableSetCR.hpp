@@ -31,6 +31,7 @@
 #include <utility>
 #include <random>
 #include <iostream>
+#include <optional>
 
 namespace sset
 {//start of namespace sset
