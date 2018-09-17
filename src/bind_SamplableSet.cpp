@@ -24,104 +24,81 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <SpreadingProcess.hpp>
+#include <SamplableSetCR.hpp>
+#include <hash_specialization.hpp>
 
 using namespace std;
-using namespace net;
+using namespace sset;
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(spreading_CR, m)
+typedef tuple<int,int,int> Edge;
+
+PYBIND11_MODULE(SamplableSet, m)
 {
     m.doc() = R"pbdoc(
-        SpreadingProcess
-        -----------------
+        SamplableSet
+        ------------
 
-        Class for the efficient simulation of spreading processes on networks.
+        Classes of set with an efficient sampling option.
 
-        .. currentmodule:: spreading_CR
+        .. currentmodule:: SamplableSet
 
         .. autosummary::
            :toctree: _generate
+           EdgeSamplableSet.__init__
+           EdgeSamplableSet.size
+           EdgeSamplableSet.count
+           EdgeSamplableSet.sample
+           EdgeSamplableSet.insert
+           EdgeSamplableSet.set_weight
+           EdgeSamplableSet.erase
 
-           SpreadingProcess.__init__
-           SpreadingProcess.get_time_vector
-           SpreadingProcess.get_Inode_number_vector
-           SpreadingProcess.get_Rnode_number_vector
-           SpreadingProcess.is_absorbed
-           SpreadingProcess.initialize
-           SpreadingProcess.reset
-           SpreadingProcess.next_state
-           SpreadingProcess.evolve
+
     )pbdoc";
 
-    py::class_<SpreadingProcess>(m, "SpreadingProcess")
-        .def(py::init<vector<std::pair<NodeLabel, NodeLabel> >&,
-            double, double, double, double>(), R"pbdoc(
-            This is the constructor of the class.
+    py::class_<SamplableSetCR<Edge> >(m, "EdgeSamplableSet")
+        .def(py::init<double, double, unsigned int>(), R"pbdoc(
+            Constructor of the class EdgeSamplableSet.
 
             Args:
-               edge_list: Edge list of the network.
-               transmission_rate: Rate of transmission per edge.
-               recovery_rate: Rate of recovery of infected nodes.
-               waning_immunity_rate: Rate for immunity loss. For the SIR model
-                   the rate must be set to 0. For the SIS model, set it to
-                   numpy.inf.
-            )pbdoc", py::arg("edge_list"), py::arg("transmission_rate"),
-            py::arg("recovery_rate"), py::arg("waning_immunity_rate"),
-            py::arg("base") = 2)
+               min_weight: Minimal weight for elements in the set.
+               max_weight: Maximal weight for elements in the set.
+               seed: Seed for the RNG
+            )pbdoc", py::arg("min_weight"), py::arg("max_weight"),
+            py::arg("seed") = 42)
 
-        .def("get_time_vector", &SpreadingProcess::get_time_vector, R"pbdoc(
-            Returns the vector of time at which events took place.
+        .def("size", &SamplableSetCR<Edge>::size, R"pbdoc(
+            Returns the number of elements in the set.
             )pbdoc")
 
-        .def("get_Inode_number_vector",
-            &SpreadingProcess::get_Inode_number_vector, R"pbdoc(
-            Returns the vector of number of infected nodes for each event.
-            )pbdoc")
-
-        .def("get_Rnode_number_vector",
-            &SpreadingProcess::get_Rnode_number_vector, R"pbdoc(
-            Returns the vector of number of recovered nodes for each event.
-            )pbdoc")
-
-        .def("is_absorbed", &SpreadingProcess::is_absorbed, R"pbdoc(
-            Returns true if the system has reached an absorbing state.
-            )pbdoc")
-
-        .def("initialize", (void (SpreadingProcess::*)(double, unsigned int))
-            &SpreadingProcess::initialize, R"pbdoc(
-            Initialize the spreading process.
+        .def("count", &SamplableSetCR<Edge>::count, R"pbdoc(
+            Returns the count of a certain element (0 or 1 since it is a set).
 
             Args:
-               fraction: Initial fraction of infected nodes.
-
-               seed: Integer seed for the random number generator.
-            )pbdoc", py::arg("fraction"), py::arg("seed"))
-
-        .def("initialize", (void (SpreadingProcess::*)(vector<NodeLabel>&,
-            unsigned int)) &SpreadingProcess::initialize, R"pbdoc(
-            Initialize the spreading process.
+               element: Element of the set.
+            )pbdoc", py::arg("element"))
+        .def("sample", &SamplableSetCR<Edge>::sample, R"pbdoc(
+            Returns an element of the set randomly (according to weights).
+            )pbdoc")
+        .def("insert", &SamplableSetCR<Edge>::insert, R"pbdoc(
+            Insert an element in the set with its associated weight.
 
             Args:
-               Inode_vector: List of nodes to be infected initially.
-
-               seed: Integer seed for the random number generator.
-            )pbdoc", py::arg("Inode_vector"), py::arg("seed"))
-
-        .def("reset", &SpreadingProcess::reset, R"pbdoc(
-            Reset the spreading process. It needs to be initialized again.
-            )pbdoc")
-
-        .def("next_state", &SpreadingProcess::next_state, R"pbdoc(
-            Makes a Monte-Carlo step--the state of the system has changed due
-            to a transmission, recovery or loss of immunity event.
-            )pbdoc")
-
-        .def("evolve", &SpreadingProcess::evolve, R"pbdoc(
-            Let the system evolve for a time duration.
+               element: Element of the set.
+               weight: Weight for random sampling.
+            )pbdoc", py::arg("element"), py::arg("weight") = 0)
+        .def("set_weight", &SamplableSetCR<Edge>::set_weight, R"pbdoc(
+            Set weight for an element in the set.
 
             Args:
-               time_variation: Time duration for the simulation.
-            )pbdoc", py::arg("time_variation"));
+               element: Element of the set.
+               weight: Weight for random sampling.
+            )pbdoc", py::arg("element"), py::arg("weight"))
+        .def("erase", &SamplableSetCR<Edge>::erase, R"pbdoc(
+            Remove an element from the set.
+
+            Args:
+               element: Element of the set.
+            )pbdoc", py::arg("element"));
 }

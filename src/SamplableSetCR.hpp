@@ -98,22 +98,25 @@ SamplableSetCR<T>::SamplableSetCR(double min_weight, double max_weight,
 template <typename T>
 const T& SamplableSetCR<T>::sample() const
 {
-    GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen_));
-    bool element_not_chosen = true;
-    InGroupIndex in_group_index;
-    while (element_not_chosen)
+    if (sampling_tree_.get_value() > 0)
     {
-        in_group_index = floor(random_01_(gen_)*propensity_group_vector_.at(
-                    group_index).size());
-        if (random_01_(gen_) >
-                propensity_group_vector_.at(group_index).at(
-                    in_group_index).second/max_propensity_vector_.at(
-                        group_index))
+        GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen_));
+        bool element_not_chosen = true;
+        InGroupIndex in_group_index;
+        while (element_not_chosen)
         {
-            element_not_chosen = false;
+            in_group_index = floor(random_01_(gen_)*propensity_group_vector_.at(
+                        group_index).size());
+            if (random_01_(gen_) >
+                    propensity_group_vector_.at(group_index).at(
+                        in_group_index).second/max_propensity_vector_.at(
+                            group_index))
+            {
+                element_not_chosen = false;
+            }
         }
+        return std::get<0>(propensity_group_vector_.at(group_index).at(in_group_index));
     }
-    return std::get<0>(propensity_group_vector_.at(group_index).at(in_group_index));
 }
 
 //Insert an element in the set with its associated weight
@@ -147,19 +150,23 @@ void SamplableSetCR<T>::set_weight(const T& element, double weight)
 template <typename T>
 void SamplableSetCR<T>::erase(const T& element)
 {
-    const SSetPosition& position = position_map_.at(element);
-    //create alias for element and its weight pair
-    std::pair<T, double>& element_weight_pair =
-        propensity_group_vector_[position.first][position.second];
-    sampling_tree_.update_value(position.first, -element_weight_pair.second);
-    //gives position to last element of propensity group and swap
-    position_map_[
-        (propensity_group_vector_[position.first].back()).first] = position;
-    std::swap(element_weight_pair,
-            propensity_group_vector_[position.first].back());
-    //remove
-    propensity_group_vector_[position.first].pop_back();
-    position_map_.erase(element);
+    //remove element if present
+    if (position_map_.find(element) != position_map_.end())
+    {
+        const SSetPosition& position = position_map_.at(element);
+        //create alias for element and its weight pair
+        std::pair<T, double>& element_weight_pair =
+            propensity_group_vector_[position.first][position.second];
+        sampling_tree_.update_value(position.first, -element_weight_pair.second);
+        //gives position to last element of propensity group and swap
+        position_map_[
+            (propensity_group_vector_[position.first].back()).first] = position;
+        std::swap(element_weight_pair,
+                propensity_group_vector_[position.first].back());
+        //remove
+        propensity_group_vector_[position.first].pop_back();
+        position_map_.erase(element);
+    }
 }
 
 
