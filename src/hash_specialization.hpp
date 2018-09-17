@@ -41,7 +41,6 @@ inline void hash_combine(size_t& seed, const T& v)
 }
 
 //Hash specialization for pairs
-template <>
 template <typename T, typename U>
 struct hash<pair<T, U> >
 {
@@ -83,7 +82,6 @@ struct hash<tuple<TT...>>
         HashValueImpl<tuple<TT...> >::apply(seed, tt);
         return seed;
     }
-
 };
 
 }//end of namespace std
