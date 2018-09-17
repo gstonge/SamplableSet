@@ -130,7 +130,7 @@ void SamplableSetCR<T>::insert(const T& element, double weight)
         InGroupIndex in_group_index =
             propensity_group_vector_[group_index].size();
         propensity_group_vector_[group_index].push_back(
-                make_pair(element,weight));
+                std::make_pair(element,weight));
         position_map_[element] = SSetPosition(group_index, in_group_index);
         sampling_tree_.update_value(group_index, weight);
     }
