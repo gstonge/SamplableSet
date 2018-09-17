@@ -33,3 +33,4 @@
 
 # backup file
 *.bak
+docs/_build/
