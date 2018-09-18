@@ -34,13 +34,15 @@ namespace sset
 
 //Default constructor of the class BinaryTree
 BinaryTree::BinaryTree() :
-    current_node_(nullptr), root_(nullptr), leaves_vector_(), leaves_index_map_()
+    current_node_(nullptr), root_(nullptr), leaves_vector_(),
+    leaves_index_map_()
 {
 }
 
 //Constructor of the class BinaryTree with specified leaves number
 BinaryTree::BinaryTree(unsigned int n_leaves) :
-    current_node_(nullptr), root_(nullptr), leaves_vector_(), leaves_index_map_()
+    current_node_(nullptr), root_(nullptr), leaves_vector_(),
+    leaves_index_map_()
 {
     if (n_leaves < 1)
     {
@@ -60,7 +62,8 @@ BinaryTree::BinaryTree(unsigned int n_leaves) :
 
 //Copy constructor of the class BinaryTree
 BinaryTree::BinaryTree(const BinaryTree& tree) :
-    current_node_(nullptr), root_(nullptr), leaves_vector_(), leaves_index_map_()
+    current_node_(nullptr), root_(nullptr), leaves_vector_(),
+    leaves_index_map_()
 {
     //Construct a new tree with n_leaves
     unsigned int n_leaves = tree.leaves_vector_.size();
@@ -75,9 +78,10 @@ BinaryTree::BinaryTree(const BinaryTree& tree) :
     //Give the same values to the leaves
     LeafIndex leaf_index = 0;
     for (auto iter = tree.leaves_vector_.begin();
-        iter < tree.leaves_vector_.end(); ++iter)
+        iter != tree.leaves_vector_.end(); ++iter)
     {
         update_value(leaf_index, (*iter)->value);
+        leaf_index += 1;
     }
 }
 
@@ -100,9 +104,10 @@ BinaryTree& BinaryTree::operator=(const BinaryTree& tree)
     //Give the same values to the leaves
     LeafIndex leaf_index = 0;
     for (auto iter = tree.leaves_vector_.begin();
-        iter < tree.leaves_vector_.end(); ++iter)
+        iter != tree.leaves_vector_.end(); ++iter)
     {
         update_value(leaf_index, (*iter)->value);
+        leaf_index += 1;
     }
 
     return *this;

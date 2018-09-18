@@ -52,9 +52,11 @@ public:
     //Definition
     typedef std::vector<std::pair<T,double> > PropensityGroup;
 
-    //Constructor
+    //Default constructor
     SamplableSetCR(double min_weight, double max_weight,
             unsigned int seed = 42);
+    //Copy constructor
+    SamplableSetCR(const SamplableSetCR<T>& s);
 
     //Accessors
     std::size_t size() const {return position_map_.size();}
@@ -81,7 +83,7 @@ private:
     std::vector<PropensityGroup> propensity_group_vector_;
 };
 
-//Constructor for the class SamplableSetCR
+//Default constructor for the class SamplableSetCR
 template <typename T>
 SamplableSetCR<T>::SamplableSetCR(double min_weight, double max_weight,
         unsigned int seed) : gen_(seed), hash_(min_weight, max_weight),
@@ -98,6 +100,16 @@ SamplableSetCR<T>::SamplableSetCR(double min_weight, double max_weight,
     max_propensity_vector_.back() = max_weight;
 }
 
+//Copy constructor
+template <typename T>
+SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s) : gen_(s.gen_()),
+    hash_(s.hash_), number_of_group_(s.number_of_group_),
+    position_map_(s.position_map_), sampling_tree_(s.sampling_tree_),
+    random_01_(0.,1.), propensity_group_vector_(s.propensity_group_vector_),
+    max_propensity_vector_(s.max_propensity_vector_)
+{
+}
+
 template <typename T>
 std::optional<T> SamplableSetCR<T>::sample() const
 {
@@ -110,6 +122,7 @@ std::optional<T> SamplableSetCR<T>::sample() const
         {
             in_group_index = floor(random_01_(gen_)*propensity_group_vector_.at(
                         group_index).size());
+
             if (random_01_(gen_) <
                     propensity_group_vector_.at(group_index).at(
                         in_group_index).second/(max_propensity_vector_.at(

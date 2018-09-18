@@ -37,6 +37,7 @@ class HashPropensity
 public:
     //Constructor
     HashPropensity(double propensity_min, double propensity_max);
+    HashPropensity(const HashPropensity& hash_object);
 
     //Call operator definition
     std::size_t operator()(double propensity) const;
