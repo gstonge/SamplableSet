@@ -31,7 +31,7 @@ namespace sset
 {//start of namespace sset
 
 
-//Constructor
+//Default constructor
 HashPropensity::HashPropensity(double propensity_min, double propensity_max) :
     propensity_min_(propensity_min), propensity_max_(propensity_max),
     power_of_two_(false)
@@ -42,6 +42,14 @@ HashPropensity::HashPropensity(double propensity_min, double propensity_max) :
     {
         power_of_two_ = true;
     }
+}
+
+//Copy constructor
+HashPropensity::HashPropensity(const HashPropensity& hash_object) :
+    propensity_min_(hash_object.propensity_min_),
+    propensity_max_(hash_object.propensity_max_),
+    power_of_two_(hash_object.power_of_two_)
+{
 }
 
 //Call operator

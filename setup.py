@@ -23,8 +23,8 @@ class get_pybind_include(object):
 
 ext_modules = [
     Extension(
-        'SamplableSet',
-        ['src/bind_SamplableSet.cpp', 'src/HashPropensity.cpp',
+        '_SamplableSetCR',
+        ['src/bind_SamplableSetCR.cpp', 'src/HashPropensity.cpp',
          'src/BinaryTree.cpp'],
         include_dirs=[
             'src/',
@@ -96,6 +96,7 @@ setup(
     url='https://github.com/gstonge/SamplableSet',
     description='Classes of set that are samplable efficiently',
     long_description='',
+    packages=setuptools.find_packages(),
     ext_modules=ext_modules,
     install_requires=['pybind11>=2.2'],
     cmdclass={'build_ext': BuildExt},

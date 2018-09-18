@@ -1,6 +1,6 @@
 EdgeSamplableSet
 ****************
-.. currentmodule:: SamplableSet
+.. currentmodule:: _SamplableSetCR
 .. autoclass:: EdgeSamplableSet
    :members:
 

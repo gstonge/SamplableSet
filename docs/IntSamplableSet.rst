@@ -1,6 +1,6 @@
 IntSamplableSet
 ***************
-.. currentmodule:: SamplableSet
+.. currentmodule:: _SamplableSetCR
 .. autoclass:: IntSamplableSet
    :members:
 
