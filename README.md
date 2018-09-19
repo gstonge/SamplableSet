@@ -41,7 +41,10 @@ To further wrap this new object to SamplableSet, it needs to be added to the pyt
     ├── wrapper.py
 ```
 
-Once this is done, the class can be used elegantly in python.
+Once this is done, the class can be used elegantly in python. A few types are already implemented, such as :
+
+* ```c++ int```
+* ```c++ tuple<int,int,int>```
 
 ## Basic usage
 
