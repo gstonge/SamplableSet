@@ -23,21 +23,24 @@ pip install ./SamplableSet
 
 On the C++ side, samplable sets are created using a template class. This template accept any kind of class elements to be put in the set if a hash object exists in the standard library. Otherwise, one needs to specialize the std::hash structure.
 
-.
-+-- src
-    +-- hash_specialization.hpp
+
+├── src
+
+    ├── hash_specialization.hpp
 
 To expose a new C++ samplable set to python, one needs to bind the class to pybind.
 
-.
-+-- src
-    +-- bind_SamplableSetCR.hpp
+
+├── src
+
+    ├── bind_SamplableSetCR.hpp
 
 To further wrap this new object to SamplableSet, it needs to be added to the python wrapper.
 
-.
-+-- SamplableSet
-    +-- wrapper.py
+
+├── SamplableSet
+
+    ├── wrapper.py
 
 Once this is done, the class can be used elegantly in python.
 
