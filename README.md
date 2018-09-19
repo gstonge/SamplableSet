@@ -43,7 +43,7 @@ To further wrap this new object to SamplableSet, it needs to be added to the pyt
 
 Once this is done, the class can be used elegantly in python. A few types are already implemented :
 
-* ```cpp int```
+* `int`
 * `tuple<int,int,int>`
 
 ## Basic usage
@@ -53,5 +53,10 @@ The current version of SamplableSet offers a C++ style for the interface of the 
 First to create an samplable set, one needs to specify the minimal (maximal) weight for elements in the set, as well as the C++ type of the elements that will be inserted in the set.
 
 ```python
+from SamplableSet import SamplableSet
+min_weight = 1
+max_weight = 100
+cpp_type = 'int'
 
+s = SamplableSet(min_weight, max_weight, cpp_type=cpp_type)
 ```
