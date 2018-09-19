@@ -50,13 +50,49 @@ Once this is done, the class can be used elegantly in python. A few types are al
 
 The current version of SamplableSet offers a C++ style for the interface of the class in python. New versions should migrate towards a more pythonic interface.
 
+### Set creation
+
 First to create an samplable set, one needs to specify the minimal (maximal) weight for elements in the set, as well as the C++ type of the elements that will be inserted in the set.
 
 ```python
 from SamplableSet import SamplableSet
+
 min_weight = 1
 max_weight = 100
 cpp_type = 'int'
 
+# Calling the default constructor
 s = SamplableSet(min_weight, max_weight, cpp_type=cpp_type)
+```
+
+### Set insertion, setting new weights, sampling and removing elements
+
+```python
+# Give preferential weights to elements
+for i in range(1,101):
+    element = i
+    weight = i
+    s.insert(element, weight)
+
+# Set new weight
+element = 1
+weight = 10
+s.set_weight(element, weight)
+
+# Sample
+element, weight = s.sample()
+
+# Remove the element
+s.erase(element)
+```
+
+Other accessors methods are defined, such as `size` returning the number of elements and `total_weight` for the sum of weights.
+
+### Copy constructor
+
+There are two ways to call the copy constructor. The first one is without specifying a seed for the new RNG. In this case, the seed is obtained from the previous RNG, which is OK, except if you need to make a lot of copies of a the same object--see the [Birthday problem](https://en.wikipedia.org/wiki/Birthday_problem). With the current implementation, there is a 1% chance collision for the seed if you make 9300 copies. The second method requires you to specify the seed.
+
+```python
+s_copy1 = SamplableSet(s)
+s_copy2 = SamplableSet(s, seed = 42)
 ```
