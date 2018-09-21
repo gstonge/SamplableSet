@@ -18,7 +18,9 @@
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.from _SamplableSetCR import *
+# SOFTWARE.
+
+from _SamplableSetCR import *
 
 template_classes = {
     'int': IntSamplableSet,
@@ -26,7 +28,13 @@ template_classes = {
 }
 
 class SamplableSet:
+    """
+    This class implements a set which is samplable in O(1) time according to the weight distribution of the elements.
+    """
     def __init__(self, *, samplable_set=None, min_weight=None, max_weight=None, seed=None, cpp_type="int"):
+        """
+
+        """
         if samplable_set is not None:
             self._samplable_set = samplable_set.copy()
         else:
@@ -43,3 +51,9 @@ class SamplableSet:
 
     def copy(self):
         return type(self._samplable_set)(self._samplable_set)
+
+    def __deepcopy__(self, memo_dict):
+        return self.copy()
+
+    def __copy__(self):
+        return self.copy()

@@ -1,1 +1,1 @@
-from .wrapper import SamplableSet
+from ._wrapper import SamplableSet
