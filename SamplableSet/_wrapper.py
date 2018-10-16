@@ -1,6 +1,6 @@
 # MIT License
 
-# Copyright (c) 2018 Jean-Samuel Leboeuf, Guillaume St-Onge
+# Copyright (c) 2018 Guillaume St-Onge
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,21 @@ template_classes = {
 class SamplableSet:
     """
     This class implements a set which is samplable in O(1) time according to the weight distribution of the elements.
-    """
-    def __init__(self, *, samplable_set=None, min_weight=None, max_weight=None, seed=None, cpp_type="int"):
-        """
 
+    The SamplableSet can be instanciated with parameters or from a pre-existing one.
+
+    This class is a wrapper around a C++ implementation.
+    """
+    def __init__(self, *, samplable_set=None, min_weight=None, max_weight=None, seed=None, cpp_type='int'):
+        """
+        Creates a new SamplableSet instance.
+
+        Args:
+            samplable_set (SamplableSet instance, optional): An instance of SamplableSet to be copied. The new object will have the same elements with the same weights. If not None, all other parameters will be ignored.
+            min_weight (float, optional): Minimum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure. Necessary if 'samplable_set' is None.
+            max_weight (float, optional): Minimum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure. Necessary if 'samplable_set' is None.
+            seed (float, optional): Seed used to sample elements from the set.
+            cpp_type (str, optional, either 'int' or 'edge'): Type used in the C++ implementation.
         """
         if samplable_set is not None:
             self._samplable_set = samplable_set.copy()
