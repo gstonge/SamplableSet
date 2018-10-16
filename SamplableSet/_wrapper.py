@@ -57,6 +57,23 @@ class SamplableSet:
             for func_name in ['size', 'total_weight', 'count', 'sample', 'insert', 'set_weight', 'erase']:
                 setattr(self, func_name, getattr(self._samplable_set, func_name))
 
+        self.max_weight = max_weight
+        self.min_weight = min_weight
+
+    def __setitem__(self, element, weight):
+        if self.min_weight <= weight <= self.max_weight:
+            # There should be a method
+            self.insert(element, weight)
+            self.set_weight(element, weight)
+        else:
+            raise ValueError(f'Cannot assign weight outside range [{self.min_weight}, {self.max_weight}].')
+
+    def __str__(self):
+        return f'SamplableSet of {len(self)} element' + ('s' if len(self) > 1 else '')
+
+    def __repr__(self):
+        return str(self)
+
     def __len__(self):
         return self.size()
 
