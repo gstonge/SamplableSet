@@ -38,7 +38,7 @@ To further wrap this new object to SamplableSet, it needs to be added to the pyt
 
 ```
 ├── SamplableSet
-    ├── wrapper.py
+    ├── _wrapper.py
 ```
 
 Once this is done, the class can be used elegantly in python. A few types are already implemented :
@@ -57,42 +57,41 @@ First to create an samplable set, one needs to specify the minimal (maximal) wei
 ```python
 from SamplableSet import SamplableSet
 
-min_weight = 1
-max_weight = 100
-cpp_type = 'int'
-
 # Calling the default constructor
-s = SamplableSet(min_weight, max_weight, cpp_type=cpp_type)
+s = SamplableSet(min_weight=1, max_weight=100, cpp_type='int')
 ```
 
-### Set insertion, setting new weights, sampling and removing elements
+### Pythonic way to do set insertion, setting new weights, sampling and removing elements
 
 ```python
 # Give preferential weights to elements
 for i in range(1,101):
-    element = i
-    weight = i
-    s.insert(element, weight)
+    s[i] = i
+    # Equivalent to s.insert(element=i, weight=i)
 
-# Set new weight
-element = 1
-weight = 10
-s.set_weight(element, weight)
+# Syntax to change the weight of an element is the same as insertion
+# Set new weight:
+s[1] = 10
+# Equivalent to s.set_weight(element=1, weight=10)
 
-# Sample
+# Sample according to the distribution in O(1)
 element, weight = s.sample()
 
 # Remove the element
 s.erase(element)
+
+# Get the number of elements in the set
+len(s)
+# Equivalent to s.size()
 ```
 
-Other accessors methods are defined, such as `size` returning the number of elements and `total_weight` for the sum of weights.
+Other accessors methods are defined, such as `total_weight` for the sum of weights.
 
 ### Copy constructor
 
 There are two ways to call the copy constructor. The first one is without specifying a seed for the new RNG. In this case, the seed is obtained from the previous RNG, which is OK, except if you need to make a lot of copies of a same object--see the [Birthday problem](https://en.wikipedia.org/wiki/Birthday_problem). With the current implementation, there is a 1% chance collision for the seed if you make 9300 copies. The second method requires you to specify the seed.
 
 ```python
-s_copy1 = SamplableSet(s)
-s_copy2 = SamplableSet(s, seed = 42)
+s_copy1 = SamplableSet(samplable_set=s)
+s_copy2 = SamplableSet(samplable_set=s, seed=42)
 ```
