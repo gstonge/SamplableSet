@@ -55,10 +55,6 @@ class SamplableSet:
             first_element, first_weight = next(iter(elements_weights))
             cpp_type = 'int' if isinstance(first_element, int) else 'edge'
 
-            # Validation
-            if len(elements) != len(weights):
-                raise ValueError("'elements' and 'weights' should have the same length.")
-
         # Instanciate the set
         if seed is None:
             self._samplable_set = template_classes[cpp_type](min_weight, max_weight)
