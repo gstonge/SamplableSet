@@ -48,7 +48,8 @@ class SamplableSet:
         """
         if samplable_set is not None:
             self._samplable_set = samplable_set.copy()
-        else:
+
+        elif isinstance(min_weight, (int, float)) and isinstance(max_weight, (int, float)):
             if seed is None:
                 self._samplable_set = template_classes[cpp_type](min_weight, max_weight)
             else:
@@ -57,8 +58,11 @@ class SamplableSet:
             for func_name in ['size', 'total_weight', 'count', 'sample', 'insert', 'set_weight', 'erase']:
                 setattr(self, func_name, getattr(self._samplable_set, func_name))
 
-        self.max_weight = max_weight
-        self.min_weight = min_weight
+            self.max_weight = max_weight
+            self.min_weight = min_weight
+
+        else:
+            raise ValueError('Minimum and maximum weights are needed to construct the set.')
 
     def __contains__(self, element):
         return True if self.count(element) else False
