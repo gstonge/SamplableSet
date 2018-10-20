@@ -55,7 +55,7 @@ class SamplableSet:
             else:
                 self._samplable_set = template_classes[cpp_type](min_weight, max_weight, seed)
 
-            for func_name in ['size', 'total_weight', 'count', 'sample', 'insert', 'set_weight', 'erase']:
+            for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'erase']:
                 setattr(self, func_name, getattr(self._samplable_set, func_name))
 
             self.max_weight = max_weight
@@ -99,3 +99,21 @@ class SamplableSet:
 
     def __copy__(self):
         return self.copy()
+
+    def sample(self, n_samples=1):
+        """
+        Randomly samples the set according to the weights of each element in O(1) time.
+
+        Args:
+            n_samples (int, optional): If equal to 1, returns one element. If greater than 1, returns a generator that will return 'n_samples' elements.
+
+        Returns: An element of the set or a generator of 'n_samples' elements.
+        """
+        if n_samples == 1:
+            return self._samplable_set.sample()
+        else:
+            return self.sample_generator(n_samples)
+
+    def sample_generator(self, n_samples):
+            for _ in range(n_samples):
+                yield self._samplable_set.sample()
