@@ -57,7 +57,7 @@ class SamplableSet:
             # Infering cpp_type
             first_element = next(iter(elements))
             first_weight = next(iter(weights))
-            cpp_type = 'int' if first_element is int else 'edge'
+            cpp_type = 'int' if isinstance(first_element, int) else 'edge'
 
             # Validation
             if len(elements) != len(weights):
@@ -69,7 +69,7 @@ class SamplableSet:
         else:
             self._samplable_set = template_classes[cpp_type](min_weight, max_weight, seed)
 
-        for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'erase']:
+        for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'get_weight', 'erase']:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
 
         self.max_weight = max_weight
@@ -85,7 +85,7 @@ class SamplableSet:
         return True if self.count(element) else False
 
     def __getitem__(self, element):
-        return self.get_weight(element)
+        return self.get_weight(element) or 0
 
     def __setitem__(self, element, weight):
         if self.min_weight <= weight <= self.max_weight:
