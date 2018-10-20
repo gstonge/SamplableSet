@@ -75,6 +75,9 @@ class SamplableSet:
         else:
             raise ValueError(f'Cannot assign weight outside range [{self.min_weight}, {self.max_weight}].')
 
+    def __delitem__(self, element):
+        self.erase(element)
+
     def __str__(self):
         return f'SamplableSet of {len(self)} element' + ('s' if len(self) > 1 else '')
 
