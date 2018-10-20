@@ -52,42 +52,65 @@ The current version of SamplableSet offers a C++ style for the interface of the 
 
 ### Set creation
 
-First to create an samplable set, one needs to specify the minimal (maximal) weight for elements in the set, as well as the C++ type of the elements that will be inserted in the set.
+First to create an empty samplable set, one needs to specify the minimal (maximal) weight for elements in the set, as well as the C++ type of the elements that will be inserted in the set. An non-empty set can be instanciated from an iterable of 2 iterables or a dict containing the elements and the weights.
 
 ```python
 from SamplableSet import SamplableSet
 
-# Calling the default constructor
+# Calling the default constructor for empty samplable set
 s = SamplableSet(min_weight=1, max_weight=100, cpp_type='int')
+
+# Calling the constructor with a dict
+elements_weights = {3:33.3, 6:66.6}
+s = SamplableSet(1, 100, elements_weights) # cpp_type is infered from 'elements_weights'
+
+# Calling the constructor with an iterable of pairs (elements, weights)
+elements = [(1,2,3), (4,5,6)] # edges
+weights = [33.3, 66.6]
+elements_weights = zip(elements, weights)
+s = SamplableSet(1, 100, elements_weights) # cpp_type is infered from 'elements_weights'
 ```
 
 ### Pythonic way to do set insertion, setting new weights, sampling and removing elements
 
 ```python
 # Give preferential weights to elements
-for i in range(1,101):
-    s[i] = i
-    # Equivalent to s.insert(element=i, weight=i)
+weight = 50
+for element in range(1,101):
+    s[element] = weight
+    # Equivalent to s.insert(element, weight)
 
 # Syntax to change the weight of an element is the same as insertion
 # Set new weight:
-s[1] = 10
-# Equivalent to s.set_weight(element=1, weight=10)
+s[element] = weight
+# Equivalent to s.set_weight(element, weight)
 
-# Sample according to the distribution in O(1)
-element, weight = s.sample()
+# Get the weight of an element
+weight = s[element]
 
 # Remove the element
-s.erase(element)
+del s[element]
+# Equivalent to s.erase(element)
+
+# Sample according to the distribution in O(1)
+# Sample one pair:
+element, weight = s.sample()
+# Or sample n pairs:
+for element, weight in s.sample(n_samples=5):
+    pass
+# Note that if 'n_samples' is greater than one, sample(n_samples) actually returns a generator.
 
 # Get the number of elements in the set
 len(s)
 # Equivalent to s.size()
+
+# Check if element is in the set
+element in s
 ```
 
 Other accessors methods are defined, such as `total_weight` for the sum of weights.
 
-### Copy constructor
+### Copy
 
 There are two ways to call the copy constructor. The first one is without specifying a seed for the new RNG. In this case, the seed is obtained from the previous RNG, which is OK, except if you need to make a lot of copies of a same object--see the [Birthday problem](https://en.wikipedia.org/wiki/Birthday_problem). With the current implementation, there is a 1% chance collision for the seed if you make 9300 copies. The second method requires you to specify the seed.
 

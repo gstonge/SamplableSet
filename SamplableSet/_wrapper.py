@@ -46,6 +46,11 @@ class SamplableSet:
             seed (float, optional): Seed used to sample elements from the set.
             cpp_type (str, optional, either 'int' or 'edge'): Type used in the C++ implementation. 'edge' should be a tuple of 3 integers. If 'elements_weights' is specified, the type will be infered from it.
         """
+        self.max_weight = max_weight
+        self.min_weight = min_weight
+        self.seed = seed or 42
+        self.cpp_type = cpp_type
+
         # Unpacking
         if elements_weights:
             if isinstance(elements_weights, dict):
@@ -56,14 +61,10 @@ class SamplableSet:
             self.cpp_type = 'int' if isinstance(first_element, int) else 'edge'
 
         # Instanciate the set
-        self.seed = seed or 42
         self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight, self.seed)
 
         for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'get_weight', 'erase']:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
-
-        self.max_weight = max_weight
-        self.min_weight = min_weight
 
         # Initialize the set
         if elements_weights:
@@ -100,7 +101,10 @@ class SamplableSet:
 
     def copy(self, seed=None):
         seed = seed or self.seed
-        return template_classes[self.cpp_type](self._samplable_set, seed)
+        cpp_copy_samplable_set = template_classes[self.cpp_type](self._samplable_set, seed)
+        wrapped_samplable_set_copy = type(self)(self.min_weight, self.max_weight, seed=seed, cpp_type=self.cpp_type)
+        wrapped_samplable_set_copy._samplable_set = cpp_copy_samplable_set
+        return wrapped_samplable_set_copy
 
     def __deepcopy__(self, memo_dict):
         return self.copy()
