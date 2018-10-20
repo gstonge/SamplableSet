@@ -53,13 +53,11 @@ class SamplableSet:
 
             # Infering cpp_type
             first_element, first_weight = next(iter(elements_weights))
-            cpp_type = 'int' if isinstance(first_element, int) else 'edge'
+            self.cpp_type = 'int' if isinstance(first_element, int) else 'edge'
 
         # Instanciate the set
-        if seed is None:
-            self._samplable_set = template_classes[cpp_type](min_weight, max_weight)
-        else:
-            self._samplable_set = template_classes[cpp_type](min_weight, max_weight, seed)
+        self.seed = seed or 42
+        self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight, seed)
 
         for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'get_weight', 'erase']:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
@@ -100,8 +98,9 @@ class SamplableSet:
     def __len__(self):
         return self.size()
 
-    def copy(self):
-        return type(self._samplable_set)(self._samplable_set)
+    def copy(self, seed=None):
+        seed = seed or self.seed
+        return template_classes[self.cpp_type](self._samplable_set, seed)
 
     def __deepcopy__(self, memo_dict):
         return self.copy()
