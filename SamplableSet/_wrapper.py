@@ -57,7 +57,7 @@ class SamplableSet:
 
         # Instanciate the set
         self.seed = seed or 42
-        self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight, seed)
+        self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight, self.seed)
 
         for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'get_weight', 'erase']:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
