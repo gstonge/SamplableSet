@@ -83,6 +83,10 @@ PYBIND11_MODULE(_SamplableSetCR, m)
             its weight as a tuple.
             )pbdoc")
 
+        .def("get_weight", &SamplableSetCR<Edge>::get_weight, R"pbdoc(
+            Returns the weight of an element in the set.
+            )pbdoc")
+
         .def("insert", &SamplableSetCR<Edge>::insert, R"pbdoc(
             Insert an element in the set with its associated weight.
 
@@ -151,6 +155,10 @@ PYBIND11_MODULE(_SamplableSetCR, m)
         .def("sample", &SamplableSetCR<int>::sample, R"pbdoc(
             Returns an element of the set randomly (according to weights) and
             its weight as a tuple.
+            )pbdoc")
+
+        .def("get_weight", &SamplableSetCR<int>::get_weight, R"pbdoc(
+            Returns the weight of an element in the set.
             )pbdoc")
 
         .def("insert", &SamplableSetCR<int>::insert, R"pbdoc(

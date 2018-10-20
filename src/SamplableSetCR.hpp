@@ -75,6 +75,7 @@ public:
         {return position_map_.count(element);}
     std::optional<std::pair<T,double> > sample() const;
     double total_weight() const {return sampling_tree_.get_value();}
+    std::optional<double> get_weight(const T& element) const;
 
     //Mutators
     void insert(const T& element, double weight = 0);
@@ -135,6 +136,7 @@ SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s,
 {
 }
 
+//sample an element according to its weight
 template <typename T>
 std::optional<std::pair<T,double> > SamplableSetCR<T>::sample() const
 {
@@ -164,7 +166,23 @@ std::optional<std::pair<T,double> > SamplableSetCR<T>::sample() const
     }
 }
 
-//Insert an element in the set with its associated weight
+//get the weight of an element if it exists
+template <typename T>
+std::optional<double> SamplableSetCR<T>::get_weight(const T& element) const
+{
+    if(count(element))
+    {
+        const SSetPosition& position = position_map_.at(element);
+        return (propensity_group_vector_[position.first][position.second]).second;
+    }
+    else
+    {
+        return std::nullopt;
+    }
+}
+
+//insert an element in the set with its associated weight
+//if the element is already there, do nothing
 template <typename T>
 void SamplableSetCR<T>::insert(const T& element, double weight)
 {
@@ -182,6 +200,7 @@ void SamplableSetCR<T>::insert(const T& element, double weight)
 }
 
 //set a new weight for the element in the set
+//if the element does not exists, same as insert
 template <typename T>
 void SamplableSetCR<T>::set_weight(const T& element, double weight)
 {
@@ -194,7 +213,7 @@ template <typename T>
 void SamplableSetCR<T>::erase(const T& element)
 {
     //remove element if present
-    if (position_map_.find(element) != position_map_.end())
+    if (count(element))
     {
         const SSetPosition& position = position_map_.at(element);
         //create alias for element and its weight pair
@@ -211,8 +230,6 @@ void SamplableSetCR<T>::erase(const T& element)
         position_map_.erase(element);
     }
 }
-
-
 
 }//end of namespace sset
 
