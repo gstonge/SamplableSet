@@ -31,7 +31,7 @@ class SamplableSet:
     """
     This class implements a set which is samplable in O(1) time according to the weight distribution of the elements. Elements can either be an integer or a tuple of 3 integers.
 
-    The SamplableSet can be instanciated empty or from an iterable of 2 iterables of elements and weights respectively.
+    The SamplableSet can be instanciated empty or from an iterable of pairs of elements and weights respectively.
 
     This class is a wrapper around a C++ implementation.
     """
@@ -42,21 +42,17 @@ class SamplableSet:
         Args:
             min_weight (float): Minimum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure.
             max_weight (float): Maximum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure.
-            elements_weights (iterable of 2 iterables or dict, optional): If an iterable, should be a pair of 2 iterables of same lengths with which the set will be instanciated. The first iterable should be the elements and the second should be the respective weights. If a dict, keys should be the elements and values should be the weights. If not specified, the set will be empty.
+            elements_weights (iterable of iterables or dict, optional): If an iterable, should be yield iterables of 2 items (element, weight) with which the set will be instanciated. If a dict, keys should be the elements and values should be the weights. If not specified, the set will be empty.
             seed (float, optional): Seed used to sample elements from the set.
             cpp_type (str, optional, either 'int' or 'edge'): Type used in the C++ implementation. 'edge' should be a tuple of 3 integers. If 'elements_weights' is specified, the type will be infered from it.
         """
         # Unpacking
         if elements_weights:
             if isinstance(elements_weights, dict):
-                elements = elements_weights.keys()
-                weights = elements_weights.values()
-            else:
-                elements, weights = elements_weights
+                elements_weights = elements_weights.items()
 
             # Infering cpp_type
-            first_element = next(iter(elements))
-            first_weight = next(iter(weights))
+            first_element, first_weight = next(iter(elements_weights))
             cpp_type = 'int' if isinstance(first_element, int) else 'edge'
 
             # Validation
@@ -78,7 +74,7 @@ class SamplableSet:
         # Initialize the set
         if elements_weights:
             self[first_element] = first_weight
-            for element, weight in zip(elements, weights):
+            for element, weight in elements_weights:
                 self[element] = weight
 
     def __contains__(self, element):
