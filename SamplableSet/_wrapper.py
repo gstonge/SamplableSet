@@ -60,14 +60,18 @@ class SamplableSet:
         self.max_weight = max_weight
         self.min_weight = min_weight
 
+    def __contains__(self, element):
+        return True if self.count(element) else False
+
     def __getitem__(self, element):
         return self.get_weight(element)
 
     def __setitem__(self, element, weight):
         if self.min_weight <= weight <= self.max_weight:
-            # To be updated with get_weight when implemented
-            self.insert(element, weight)
-            self.set_weight(element, weight)
+            if element in self:
+                self.set_weight(element, weight)
+            else:
+                self.insert(element, weight)
         else:
             raise ValueError(f'Cannot assign weight outside range [{self.min_weight}, {self.max_weight}].')
 
