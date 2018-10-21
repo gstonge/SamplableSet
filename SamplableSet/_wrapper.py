@@ -62,15 +62,20 @@ class SamplableSet:
 
         # Instanciate the set
         self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight, self.seed)
-
-        for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'get_weight', 'erase']:
-            setattr(self, func_name, getattr(self._samplable_set, func_name))
+        self._wrap_methods()
 
         # Initialize the set
         if elements_weights:
             self[first_element] = first_weight
             for element, weight in elements_weights:
                 self[element] = weight
+
+    def _wrap_methods(self):
+        """
+        Assigns the methods of the C++ class to the wrapper.
+        """
+        for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'get_weight', 'erase']:
+            setattr(self, func_name, getattr(self._samplable_set, func_name))
 
     def __contains__(self, element):
         return True if self.count(element) else False
@@ -101,9 +106,13 @@ class SamplableSet:
 
     def copy(self, seed=None):
         seed = seed or self.seed
-        cpp_copy_samplable_set = template_classes[self.cpp_type](self._samplable_set, seed)
-        wrapped_samplable_set_copy = type(self)(self.min_weight, self.max_weight, seed=seed, cpp_type=self.cpp_type)
+        cpp_copy_samplable_set = type(self._samplable_set)(self._samplable_set, seed) # Copy of the C++ class with the copy constructor
+        wrapped_samplable_set_copy = type(self)(self.min_weight, self.max_weight, seed=seed, cpp_type=self.cpp_type) # New wrapper object to be returned
+
+        # Link the wrapper with the wrappee
         wrapped_samplable_set_copy._samplable_set = cpp_copy_samplable_set
+        wrapped_samplable_set_copy._wrap_methods()
+
         return wrapped_samplable_set_copy
 
     def __deepcopy__(self, memo_dict):
