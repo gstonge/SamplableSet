@@ -112,9 +112,16 @@ Other accessors methods are defined, such as `total_weight` for the sum of weigh
 
 ### Copy
 
-There are two ways to call the copy constructor. The first one is without specifying a seed for the new RNG. In this case, the seed is obtained from the previous RNG, which is OK, except if you need to make a lot of copies of a same object--see the [Birthday problem](https://en.wikipedia.org/wiki/Birthday_problem). With the current implementation, there is a 1% chance collision for the seed if you make 9300 copies. The second method requires you to specify the seed.
+There are two ways to copy a samplable set. The first one is without specifying a seed for the new RNG. In this case, the seed is obtained from the previous RNG, which is OK, except if you need to make a lot of copies of a same object--see the [Birthday problem](https://en.wikipedia.org/wiki/Birthday_problem). With the current implementation, there is a 1% chance collision for the seed if you make 9300 copies. The second method requires you to specify the seed.
 
 ```python
-s_copy1 = SamplableSet(samplable_set=s)
-s_copy2 = SamplableSet(samplable_set=s, seed=42)
+s = SamplableSet(1,100, [(1,33.3)])
+s_copy1 = s.copy()
+s_copy2 = s.copy(seed=2018)
+
+# Copy and deepcopy are also supported, but without the seed option
+from copy import copy, deepcopy
+s_copy_3 = copy(s)
+s_copy_4 = deepcopy(s)
+# Note that copy and deepcopy are the same implementation and are in fact both deepcopies because the class is actually a wrapper.
 ```
