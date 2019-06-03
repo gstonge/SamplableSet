@@ -74,6 +74,8 @@ public:
     std::size_t inline count(const T& element) const
         {return position_map_.count(element);}
     std::optional<std::pair<T,double> > sample() const;
+    template <typename ExtRNG>
+    std::optional<std::pair<T,double> > sample_ext_RNG(ExtRNG& gen) const;
     double total_weight() const {return sampling_tree_.get_value();}
     std::optional<double> get_weight(const T& element) const;
 
@@ -151,6 +153,37 @@ std::optional<std::pair<T,double> > SamplableSetCR<T>::sample() const
                         group_index).size());
 
             if (random_01_(gen_) <
+                    propensity_group_vector_.at(group_index).at(
+                        in_group_index).second/(max_propensity_vector_.at(
+                            group_index)))
+            {
+                element_not_chosen = false;
+            }
+        }
+        return propensity_group_vector_.at(group_index).at(in_group_index);
+    }
+    else
+    {
+        return std::nullopt;
+    }
+}
+
+//sample an element according to its weight using an external RNG
+template <typename T>
+template <typename ExtRNG>
+std::optional<std::pair<T,double> > SamplableSetCR<T>::sample_ext_RNG(ExtRNG& gen) const
+{
+    if (sampling_tree_.get_value() > 0)
+    {
+        GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen));
+        bool element_not_chosen = true;
+        InGroupIndex in_group_index;
+        while (element_not_chosen)
+        {
+            in_group_index = floor(random_01_(gen)*propensity_group_vector_.at(
+                        group_index).size());
+
+            if (random_01_(gen) <
                     propensity_group_vector_.at(group_index).at(
                         in_group_index).second/(max_propensity_vector_.at(
                             group_index)))
