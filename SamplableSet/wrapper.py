@@ -26,7 +26,8 @@ import copy
 
 implemented_type_dict={
     "int": IntSamplableSet,
-    "tuple<int,int,int>": EdgeSamplableSet
+    "tuple<int,int,int>": EdgeSamplableSet,
+    "tuple<tuple<int,int>,tuple<int,int>>": DoubleEdgeSamplableSet
 }
 implemented_type_list=implemented_type_dict.keys()
 
@@ -54,3 +55,10 @@ def _(samplable_set, seed = None):
         return EdgeSamplableSet(samplable_set)
     else:
         return EdgeSamplableSet(samplable_set, seed)
+
+@SamplableSet.register(DoubleEdgeSamplableSet)
+def _(samplable_set, seed = None):
+    if seed is None:
+        return DoubleEdgeSamplableSet(samplable_set)
+    else:
+        return DoubleEdgeSamplableSet(samplable_set, seed)
