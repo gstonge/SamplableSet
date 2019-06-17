@@ -27,7 +27,8 @@ import copy
 implemented_type_dict={
     "int": IntSamplableSet,
     "tuple<int,int,int>": EdgeSamplableSet,
-    "tuple<tuple<int,int>,tuple<int,int>>": DoubleEdgeSamplableSet
+    "tuple<tuple<int,int>,tuple<int,int>>": DoubleEdgeSamplableSet,
+    "tuple<int,int>": DoubleIntSamplableSet
 }
 implemented_type_list=implemented_type_dict.keys()
 
