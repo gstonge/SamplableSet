@@ -94,7 +94,7 @@ element, weight = s.sample()
 s.erase(element)
 ```
 
-### Python style
+#### Python style
 
 ```python
 # Give preferential weights to elements
