@@ -237,6 +237,10 @@ PYBIND11_MODULE(_SamplableSetCR, m)
             Returns the weight of an element in the set.
             )pbdoc")
 
+        .def("get_at_iterator", &SamplableSetCR<int>::get_at_iterator, R"pbdoc(
+            Returns the element at iterator in the set.
+            )pbdoc")
+
         .def("insert", &SamplableSetCR<int>::insert, R"pbdoc(
             Insert an element in the set with its associated weight.
 
@@ -258,7 +262,15 @@ PYBIND11_MODULE(_SamplableSetCR, m)
 
             Args:
                element: Element of the set.
-            )pbdoc", py::arg("element"));
+            )pbdoc", py::arg("element"))
+
+        .def("next", &SamplableSetCR<int>::next, R"pbdoc(
+            Move the iterator one element ahead.
+            )pbdoc")
+
+        .def("init_iterator", &SamplableSetCR<int>::init_iterator, R"pbdoc(
+            Put the iterator at the beginning of the set.
+            )pbdoc");
 
     py::class_<SamplableSetCR<DoubleInt> >(m, "DoubleIntSamplableSet")
 
