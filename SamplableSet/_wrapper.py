@@ -128,6 +128,9 @@ class SamplableSet:
     def __copy__(self):
         return self.copy()
 
+    def __iter__(self):
+        return self.element_generator()
+
     def sample(self, n_samples=1):
         """
         Randomly samples the set according to the weights of each element in O(1) time.
@@ -145,3 +148,11 @@ class SamplableSet:
     def sample_generator(self, n_samples):
             for _ in range(n_samples):
                 yield self._samplable_set.sample()
+
+    def element_generator(self):
+        self.init_iterator()
+        while self.get_at_iterator() is not None:
+            yield self.get_at_iterator()
+            self.next()
+
+

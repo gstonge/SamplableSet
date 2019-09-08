@@ -285,7 +285,7 @@ void SamplableSetCR<T>::next()
         //change group if necessary
         while (iterator_ == propensity_group_vector_[
             iterator_group_index_].end() and
-            iterator_group_index_ < propensity_group_vector_.size())
+            iterator_group_index_ < propensity_group_vector_.size()-1)
         {
             iterator_group_index_ += 1;
             iterator_ = propensity_group_vector_[
@@ -316,7 +316,7 @@ void SamplableSetCR<T>::init_iterator()
         //note that if the set is empty, it will just point to the end
         while (iterator_ == propensity_group_vector_[
                 iterator_group_index_].end() and
-                iterator_group_index_ < propensity_group_vector_.size())
+                iterator_group_index_ < propensity_group_vector_.size()-1)
         {
             iterator_group_index_ += 1;
             iterator_ = propensity_group_vector_[
