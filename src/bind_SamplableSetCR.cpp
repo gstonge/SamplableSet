@@ -36,12 +36,16 @@ typedef tuple<int,int,int> Edge;
 typedef tuple<tuple<int,int>,tuple<int,int>> DoubleEdge;
 typedef tuple<int,int> DoubleInt;
 
-PYBIND11_MODULE(_SamplableSetCR, m)
+//template function to declare different types of samplable set
+template<typename T>
+void declare_samplable_set(py::module &m, string typestr)
 {
-    py::class_<SamplableSetCR<Edge> >(m, "EdgeSamplableSet")
+    string pyclass_name = typestr + string("SamplableSet");
+
+    py::class_<SamplableSetCR<T> >(m, pyclass_name.c_str())
 
         .def(py::init<double, double, unsigned int>(), R"pbdoc(
-            Default constructor of the class EdgeSamplableSet.
+            Default constructor of the class.
 
             Args:
                min_weight: Minimal weight for elements in the set.
@@ -50,198 +54,50 @@ PYBIND11_MODULE(_SamplableSetCR, m)
             )pbdoc", py::arg("min_weight"), py::arg("max_weight"),
             py::arg("seed") = 42)
 
-        .def(py::init<const SamplableSetCR<Edge>&>(), R"pbdoc(
-            Copy constructor without seed of the class EdgeSamplableSet.
+        .def(py::init<const SamplableSetCR<T>&>(), R"pbdoc(
+            Copy constructor without seed of the class.
 
             Args:
                samplable_set: Copied set
             )pbdoc", py::arg("samplable_set"))
 
-        .def(py::init<const SamplableSetCR<Edge>&, unsigned int>(), R"pbdoc(
-            Copy constructor with seed of the class EdgeSamplableSet.
+        .def(py::init<const SamplableSetCR<T>&, unsigned int>(), R"pbdoc(
+            Copy constructor with seed of the class.
 
             Args:
                samplable_set: Copied set
                seed: New seed for the RNG.
             )pbdoc", py::arg("samplable_set"), py::arg("seed"))
 
-        .def("size", &SamplableSetCR<Edge>::size, R"pbdoc(
+        .def("size", &SamplableSetCR<T>::size, R"pbdoc(
             Returns the number of elements in the set.
             )pbdoc")
 
-        .def("total_weight", &SamplableSetCR<Edge>::total_weight, R"pbdoc(
+        .def("total_weight", &SamplableSetCR<T>::total_weight, R"pbdoc(
             Returns the sum of the weights of the elements in the set.
             )pbdoc")
 
-        .def("count", &SamplableSetCR<Edge>::count, R"pbdoc(
+        .def("count", &SamplableSetCR<T>::count, R"pbdoc(
             Returns the count of a certain element (0 or 1 since it is a set).
 
             Args:
                element: Element of the set.
             )pbdoc", py::arg("element"))
 
-        .def("sample", &SamplableSetCR<Edge>::sample, R"pbdoc(
+        .def("sample", &SamplableSetCR<T>::sample, R"pbdoc(
             Returns an element of the set randomly (according to weights) and
             its weight as a tuple.
             )pbdoc")
 
-        .def("get_weight", &SamplableSetCR<Edge>::get_weight, R"pbdoc(
+        .def("get_weight", &SamplableSetCR<T>::get_weight, R"pbdoc(
             Returns the weight of an element in the set.
             )pbdoc")
 
-        .def("insert", &SamplableSetCR<Edge>::insert, R"pbdoc(
-            Insert an element in the set with its associated weight.
-
-            Args:
-               element: Element of the set.
-               weight: Weight for random sampling.
-            )pbdoc", py::arg("element"), py::arg("weight") = 0)
-
-        .def("set_weight", &SamplableSetCR<Edge>::set_weight, R"pbdoc(
-            Set weight for an element in the set.
-
-            Args:
-               element: Element of the set.
-               weight: Weight for random sampling.
-            )pbdoc", py::arg("element"), py::arg("weight"))
-
-        .def("erase", &SamplableSetCR<Edge>::erase, R"pbdoc(
-            Remove an element from the set.
-
-            Args:
-               element: Element of the set.
-            )pbdoc", py::arg("element"));
-
-    py::class_<SamplableSetCR<DoubleEdge> >(m, "DoubleEdgeSamplableSet")
-
-        .def(py::init<double, double, unsigned int>(), R"pbdoc(
-            Default constructor of the class DoubleEdgeSamplableSet.
-
-            Args:
-               min_weight: Minimal weight for elements in the set.
-               max_weight: Maximal weight for elements in the set.
-               seed: Seed for the RNG.
-            )pbdoc", py::arg("min_weight"), py::arg("max_weight"),
-            py::arg("seed") = 42)
-
-        .def(py::init<const SamplableSetCR<DoubleEdge>&>(), R"pbdoc(
-            Copy constructor without seed of the class DoubleEdgeSamplableSet.
-
-            Args:
-               samplable_set: Copied set
-            )pbdoc", py::arg("samplable_set"))
-
-        .def(py::init<const SamplableSetCR<DoubleEdge>&, unsigned int>(), R"pbdoc(
-            Copy constructor with seed of the class DoubleEdgeSamplableSet.
-
-            Args:
-               samplable_set: Copied set
-               seed: New seed for the RNG.
-            )pbdoc", py::arg("samplable_set"), py::arg("seed"))
-
-        .def("size", &SamplableSetCR<DoubleEdge>::size, R"pbdoc(
-            Returns the number of elements in the set.
-            )pbdoc")
-
-        .def("total_weight", &SamplableSetCR<DoubleEdge>::total_weight, R"pbdoc(
-            Returns the sum of the weights of the elements in the set.
-            )pbdoc")
-
-        .def("count", &SamplableSetCR<DoubleEdge>::count, R"pbdoc(
-            Returns the count of a certain element (0 or 1 since it is a set).
-
-            Args:
-               element: Element of the set.
-            )pbdoc", py::arg("element"))
-
-        .def("sample", &SamplableSetCR<DoubleEdge>::sample, R"pbdoc(
-            Returns an element of the set randomly (according to weights) and
-            its weight as a tuple.
-            )pbdoc")
-
-        .def("get_weight", &SamplableSetCR<DoubleEdge>::get_weight, R"pbdoc(
-            Returns the weight of an element in the set.
-            )pbdoc")
-
-        .def("insert", &SamplableSetCR<DoubleEdge>::insert, R"pbdoc(
-            Insert an element in the set with its associated weight.
-
-            Args:
-               element: Element of the set.
-               weight: Weight for random sampling.
-            )pbdoc", py::arg("element"), py::arg("weight") = 0)
-
-        .def("set_weight", &SamplableSetCR<DoubleEdge>::set_weight, R"pbdoc(
-            Set weight for an element in the set.
-
-            Args:
-               element: Element of the set.
-               weight: Weight for random sampling.
-            )pbdoc", py::arg("element"), py::arg("weight"))
-
-        .def("erase", &SamplableSetCR<DoubleEdge>::erase, R"pbdoc(
-            Remove an element from the set.
-
-            Args:
-               element: Element of the set.
-            )pbdoc", py::arg("element"));
-
-    py::class_<SamplableSetCR<int> >(m, "IntSamplableSet")
-
-        .def(py::init<double, double, unsigned int>(), R"pbdoc(
-            Default constructor of the class IntSamplableSet.
-
-            Args:
-               min_weight: Minimal weight for elements in the set.
-               max_weight: Maximal weight for elements in the set.
-               seed: Seed for the RNG.
-            )pbdoc", py::arg("min_weight"), py::arg("max_weight"),
-            py::arg("seed") = 42)
-
-        .def(py::init<const SamplableSetCR<int>&>(), R"pbdoc(
-            Copy constructor without seed of the class IntSamplableSet.
-
-            Args:
-               samplable_set: Copied set
-            )pbdoc", py::arg("samplable_set"))
-
-        .def(py::init<const SamplableSetCR<int>&, unsigned int>(), R"pbdoc(
-            Copy constructor with seed of the class IntSamplableSet.
-
-            Args:
-               samplable_set: Copied set
-               seed: New seed for the RNG.
-            )pbdoc", py::arg("samplable_set"), py::arg("seed"))
-
-        .def("size", &SamplableSetCR<int>::size, R"pbdoc(
-            Returns the number of elements in the set.
-            )pbdoc")
-
-        .def("total_weight", &SamplableSetCR<int>::total_weight, R"pbdoc(
-            Returns the sum of the weights of the elements in the set.
-            )pbdoc")
-
-        .def("count", &SamplableSetCR<int>::count, R"pbdoc(
-            Returns the count of a certain element (0 or 1 since it is a set).
-
-            Args:
-               element: Element of the set.
-            )pbdoc", py::arg("element"))
-
-        .def("sample", &SamplableSetCR<int>::sample, R"pbdoc(
-            Returns an element of the set randomly (according to weights) and
-            its weight as a tuple.
-            )pbdoc")
-
-        .def("get_weight", &SamplableSetCR<int>::get_weight, R"pbdoc(
-            Returns the weight of an element in the set.
-            )pbdoc")
-
-        .def("get_at_iterator", &SamplableSetCR<int>::get_at_iterator, R"pbdoc(
+        .def("get_at_iterator", &SamplableSetCR<T>::get_at_iterator, R"pbdoc(
             Returns the element at iterator in the set.
             )pbdoc")
 
-        .def("insert", &SamplableSetCR<int>::insert, R"pbdoc(
+        .def("insert", &SamplableSetCR<T>::insert, R"pbdoc(
             Insert an element in the set with its associated weight.
 
             Args:
@@ -249,7 +105,7 @@ PYBIND11_MODULE(_SamplableSetCR, m)
                weight: Weight for random sampling.
             )pbdoc", py::arg("element"), py::arg("weight") = 0)
 
-        .def("set_weight", &SamplableSetCR<int>::set_weight, R"pbdoc(
+        .def("set_weight", &SamplableSetCR<T>::set_weight, R"pbdoc(
             Set weight for an element in the set.
 
             Args:
@@ -257,92 +113,27 @@ PYBIND11_MODULE(_SamplableSetCR, m)
                weight: Weight for random sampling.
             )pbdoc", py::arg("element"), py::arg("weight"))
 
-        .def("erase", &SamplableSetCR<int>::erase, R"pbdoc(
+        .def("erase", &SamplableSetCR<T>::erase, R"pbdoc(
             Remove an element from the set.
 
             Args:
                element: Element of the set.
             )pbdoc", py::arg("element"))
 
-        .def("next", &SamplableSetCR<int>::next, R"pbdoc(
+        .def("next", &SamplableSetCR<T>::next, R"pbdoc(
             Move the iterator one element ahead.
             )pbdoc")
 
-        .def("init_iterator", &SamplableSetCR<int>::init_iterator, R"pbdoc(
+        .def("init_iterator", &SamplableSetCR<T>::init_iterator, R"pbdoc(
             Put the iterator at the beginning of the set.
             )pbdoc");
+}
 
-    py::class_<SamplableSetCR<DoubleInt> >(m, "DoubleIntSamplableSet")
-
-        .def(py::init<double, double, unsigned int>(), R"pbdoc(
-            Default constructor of the class IntSamplableSet.
-
-            Args:
-               min_weight: Minimal weight for elements in the set.
-               max_weight: Maximal weight for elements in the set.
-               seed: Seed for the RNG.
-            )pbdoc", py::arg("min_weight"), py::arg("max_weight"),
-            py::arg("seed") = 42)
-
-        .def(py::init<const SamplableSetCR<DoubleInt>&>(), R"pbdoc(
-            Copy constructor without seed of the class IntSamplableSet.
-
-            Args:
-               samplable_set: Copied set
-            )pbdoc", py::arg("samplable_set"))
-
-        .def(py::init<const SamplableSetCR<DoubleInt>&, unsigned int>(), R"pbdoc(
-            Copy constructor with seed of the class IntSamplableSet.
-
-            Args:
-               samplable_set: Copied set
-               seed: New seed for the RNG.
-            )pbdoc", py::arg("samplable_set"), py::arg("seed"))
-
-        .def("size", &SamplableSetCR<DoubleInt>::size, R"pbdoc(
-            Returns the number of elements in the set.
-            )pbdoc")
-
-        .def("total_weight", &SamplableSetCR<DoubleInt>::total_weight, R"pbdoc(
-            Returns the sum of the weights of the elements in the set.
-            )pbdoc")
-
-        .def("count", &SamplableSetCR<DoubleInt>::count, R"pbdoc(
-            Returns the count of a certain element (0 or 1 since it is a set).
-
-            Args:
-               element: Element of the set.
-            )pbdoc", py::arg("element"))
-
-        .def("sample", &SamplableSetCR<DoubleInt>::sample, R"pbdoc(
-            Returns an element of the set randomly (according to weights) and
-            its weight as a tuple.
-            )pbdoc")
-
-        .def("get_weight", &SamplableSetCR<DoubleInt>::get_weight, R"pbdoc(
-            Returns the weight of an element in the set.
-            )pbdoc")
-
-        .def("insert", &SamplableSetCR<DoubleInt>::insert, R"pbdoc(
-            Insert an element in the set with its associated weight.
-
-            Args:
-               element: Element of the set.
-               weight: Weight for random sampling.
-            )pbdoc", py::arg("element"), py::arg("weight") = 0)
-
-        .def("set_weight", &SamplableSetCR<DoubleInt>::set_weight, R"pbdoc(
-            Set weight for an element in the set.
-
-            Args:
-               element: Element of the set.
-               weight: Weight for random sampling.
-            )pbdoc", py::arg("element"), py::arg("weight"))
-
-        .def("erase", &SamplableSetCR<DoubleInt>::erase, R"pbdoc(
-            Remove an element from the set.
-
-            Args:
-               element: Element of the set.
-            )pbdoc", py::arg("element"));
+PYBIND11_MODULE(_SamplableSetCR, m)
+{
+    declare_samplable_set<int>(m, "Int");
+    declare_samplable_set<string>(m, "String");
+    declare_samplable_set<Edge>(m, "Edge");
+    declare_samplable_set<DoubleEdge>(m, "DoubleEdge");
+    declare_samplable_set<DoubleInt>(m, "DoubleInt");
 }
