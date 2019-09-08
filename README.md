@@ -4,9 +4,11 @@ An implementation of sets that can be randomly sampled according to the weights 
 
 This family of classes is very useful when one needs to udpate dynamically (insertion, erase) a set elements, as well as sample from it. It uses a composition and rejection scheme, making it efficient even if the weights span multiples order of magnitude. For instance, this kind of situation can arise in markov chains, when a collection of independant processes have multiscale propensities.
 
-## Requirements
+## Requirements and dependencies
 
 * A compiler with C++17 support
+* `python3`
+* `pybind11` version >= 2.2
 
 ## Installation
 
@@ -46,9 +48,9 @@ Once this is done, the class can be used elegantly in python. Basic types are al
 * `int`
 * `str`
 
-## Basic usage
+## Usage
 
-The package offers both a C++ and a python style interface of the class in python.
+The package offers both a C++ and a python style interface for the class in python.
 
 ### Set creation
 
@@ -71,30 +73,7 @@ elements_weights = zip(elements, weights)
 s = SamplableSet(1, 100, elements_weights) # cpp_type is infered from 'elements_weights'
 ```
 
-### Set insertion, setting new weights, sampling, removing elements and more
-
-#### C++ style
-
-```python
-# Give preferential weights to elements
-for i in range(1,101):
-    element = i
-    weight = i
-    s.insert(element, weight)
-
-# Set new weight
-element = 1
-weight = 10
-s.set_weight(element, weight)
-
-# Sample
-element, weight = s.sample()
-
-# Remove the element
-s.erase(element)
-```
-
-#### Python style
+### Basic operations : insertion, setting new weights, removing elements, etc.
 
 ```python
 # Give preferential weights to elements
@@ -115,30 +94,35 @@ weight = s[element]
 del s[element]
 # Equivalent to s.erase(element)
 
-# Sample one pair:
-element, weight = s.sample()
-# Or sample n pairs:
-for element, weight in s.sample(n_samples=5):
-    pass
-# Note that if 'n_samples' is greater than one, sample(n_samples) actually returns a generator.
-
 # Get the number of elements in the set
 len(s)
 # Equivalent to s.size()
 
 # Check if element is in the set
 element in s
-```
 
-Other accessors methods are defined, such as `total_weight` for the sum of weights.
+# Get the total weight sum
+totat_weight = s.total_weight()
+```
 
 ### Generator
 
-The python class is an iterable.
+The class is an iterable.
 
 ```python
 for element, weight in s:
     pass
+```
+
+### Sampling
+
+```python
+# Sample one pair:
+element, weight = s.sample()
+# Or sample n pairs:
+for element, weight in s.sample(n_samples=5):
+    pass
+# Note that if 'n_samples' is greater than one, sample(n_samples) actually returns a generator.
 ```
 
 ### Copy
