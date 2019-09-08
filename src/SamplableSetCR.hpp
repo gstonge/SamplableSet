@@ -78,11 +78,15 @@ public:
     std::optional<std::pair<T,double> > sample_ext_RNG(ExtRNG& gen) const;
     double total_weight() const {return sampling_tree_.get_value();}
     std::optional<double> get_weight(const T& element) const;
+    std::optional<std::pair<T,double> > get_at_iterator() const;
 
     //Mutators
     void insert(const T& element, double weight = 0);
     void set_weight(const T& element, double weight);
     void erase(const T& element);
+    void next();
+    void init_iterator();
+
 
 private:
     //unvarying
@@ -95,6 +99,8 @@ private:
     std::unordered_map<T,SSetPosition> position_map_;
     mutable BinaryTree sampling_tree_;
     std::vector<PropensityGroup> propensity_group_vector_;
+    mutable typename PropensityGroup::iterator iterator_;
+    mutable GroupIndex iterator_group_index_;
 };
 
 //Default constructor for the class SamplableSetCR
@@ -104,7 +110,9 @@ SamplableSetCR<T>::SamplableSetCR(double min_weight, double max_weight,
     number_of_group_(hash_(max_weight)+1), position_map_(),
     sampling_tree_(number_of_group_), random_01_(0.,1.),
     propensity_group_vector_(number_of_group_),
-    max_propensity_vector_(number_of_group_, 2*min_weight)
+    max_propensity_vector_(number_of_group_, 2*min_weight),
+    iterator_(NULL),
+    iterator_group_index_(0)
 {
     //Initialize max propensity vector
     if (number_of_group_ > 2)
@@ -123,7 +131,9 @@ SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s) : gen_(s.gen_()),
     hash_(s.hash_), number_of_group_(s.number_of_group_),
     position_map_(s.position_map_), sampling_tree_(s.sampling_tree_),
     random_01_(0.,1.), propensity_group_vector_(s.propensity_group_vector_),
-    max_propensity_vector_(s.max_propensity_vector_)
+    max_propensity_vector_(s.max_propensity_vector_),
+    iterator_(NULL),
+    iterator_group_index_(0)
 {
 }
 
@@ -134,7 +144,9 @@ SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s,
     hash_(s.hash_), number_of_group_(s.number_of_group_),
     position_map_(s.position_map_), sampling_tree_(s.sampling_tree_),
     random_01_(0.,1.), propensity_group_vector_(s.propensity_group_vector_),
-    max_propensity_vector_(s.max_propensity_vector_)
+    max_propensity_vector_(s.max_propensity_vector_),
+    iterator_(NULL),
+    iterator_group_index_(0)
 {
 }
 
@@ -263,6 +275,54 @@ void SamplableSetCR<T>::erase(const T& element)
         position_map_.erase(element);
     }
 }
+
+template <typename T>
+void SamplableSetCR<T>::next()
+{
+    if (iterator_ != propensity_group_vector_.back().end())
+    {
+        iterator_ ++;
+        //change group if necessary
+        while (iterator_ == propensity_group_vector_[
+            iterator_group_index_].end() and
+            iterator_group_index_ < propensity_group_vector_.size()-1)
+        {
+            iterator_group_index_ += 1;
+            iterator_ = propensity_group_vector_[
+                iterator_group_index_].begin();
+        }
+    }
+}
+
+template <typename T>
+std::optional<std::pair<T,double> > SamplableSetCR<T>::get_at_iterator() const
+{
+    if (iterator_ != (propensity_group_vector_.back()).end())
+    {
+        return *iterator_;
+    }
+    else
+    {
+        return std::nullopt;
+    }
+}
+
+template <typename T>
+void SamplableSetCR<T>::init_iterator()
+    {
+        iterator_group_index_ = 0;
+        iterator_ = propensity_group_vector_[0].begin();
+        //it is possible the group is empty, look for subsequent containers
+        //note that if the set is empty, it will just point to the end
+        while (iterator_ == propensity_group_vector_[
+                iterator_group_index_].end() and
+                iterator_group_index_ < propensity_group_vector_.size()-1)
+        {
+            iterator_group_index_ += 1;
+            iterator_ = propensity_group_vector_[
+                iterator_group_index_].begin();
+        }
+    }
 
 }//end of namespace sset
 

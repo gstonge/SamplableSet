@@ -24,7 +24,7 @@ from _SamplableSetCR import *
 
 template_classes = {
     'int': IntSamplableSet,
-    'edge': EdgeSamplableSet
+    'str': StringSamplableSet
 }
 
 class SamplableSet:
@@ -44,7 +44,7 @@ class SamplableSet:
             max_weight (float): Maximum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure.
             elements_weights (iterable of iterables or dict, optional): If an iterable, should be yield iterables of 2 items (element, weight) with which the set will be instanciated. If a dict, keys should be the elements and values should be the weights. If not specified, the set will be empty.
             seed (float, optional): Seed used to sample elements from the set.
-            cpp_type (str, optional, either 'int' or 'edge'): Type used in the C++ implementation. 'edge' should be a tuple of 3 integers. If 'elements_weights' is specified, the type will be infered from it.
+            cpp_type (str, optional, either 'int' or 'str'): Type used in the C++ implementation. If 'elements_weights' is specified, the type will be infered from it.
         """
         self.max_weight = max_weight
         self.min_weight = min_weight
@@ -58,7 +58,12 @@ class SamplableSet:
 
             # Infering cpp_type
             first_element, first_weight = next(iter(elements_weights))
-            self.cpp_type = 'int' if isinstance(first_element, int) else 'edge'
+            if isinstance(first_element, int):
+                self.cpp_type = 'int'
+            elif isinstance(first_element, str):
+                self.cpp_type = 'str'
+            else:
+                raise ValueError('Cannot infer the type from the elements')
 
         # Instanciate the set
         self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight, self.seed)
@@ -74,7 +79,9 @@ class SamplableSet:
         """
         Assigns the methods of the C++ class to the wrapper.
         """
-        for func_name in ['size', 'total_weight', 'count', 'insert', 'set_weight', 'get_weight', 'erase']:
+        for func_name in ['size', 'total_weight', 'count', 'insert', 'next',
+                          'init_iterator', 'set_weight', 'get_weight',
+                          'get_at_iterator', 'erase']:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
 
     def __contains__(self, element):
@@ -121,6 +128,9 @@ class SamplableSet:
     def __copy__(self):
         return self.copy()
 
+    def __iter__(self):
+        return self.element_generator()
+
     def sample(self, n_samples=1):
         """
         Randomly samples the set according to the weights of each element in O(1) time.
@@ -138,3 +148,11 @@ class SamplableSet:
     def sample_generator(self, n_samples):
             for _ in range(n_samples):
                 yield self._samplable_set.sample()
+
+    def element_generator(self):
+        self.init_iterator()
+        while self.get_at_iterator() is not None:
+            yield self.get_at_iterator()
+            self.next()
+
+
