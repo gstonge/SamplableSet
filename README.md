@@ -134,7 +134,12 @@ Other accessors methods are defined, such as `total_weight` for the sum of weigh
 
 ### Generator
 
-*coming soon*
+The python class is an iterable.
+
+```python
+for element, weight in s:
+    pass
+```
 
 ### Copy
 
