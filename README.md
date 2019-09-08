@@ -41,10 +41,10 @@ To further wrap this new object to SamplableSet, it needs to be added to the pyt
     ├── _wrapper.py
 ```
 
-Once this is done, the class can be used elegantly in python. A few types are already implemented :
+Once this is done, the class can be used elegantly in python. Basic types are already implemented :
 
 * `int`
-* `tuple<int,int,int>`
+* `str`
 
 ## Basic usage
 
@@ -65,7 +65,7 @@ elements_weights = {3:33.3, 6:66.6}
 s = SamplableSet(1, 100, elements_weights) # cpp_type is infered from 'elements_weights'
 
 # Calling the constructor with an iterable of pairs (elements, weights)
-elements = [(1,2,3), (4,5,6)] # edges
+elements = ['a', 'b']
 weights = [33.3, 66.6]
 elements_weights = zip(elements, weights)
 s = SamplableSet(1, 100, elements_weights) # cpp_type is infered from 'elements_weights'
@@ -131,6 +131,10 @@ element in s
 ```
 
 Other accessors methods are defined, such as `total_weight` for the sum of weights.
+
+### Generator
+
+*coming soon*
 
 ### Copy
 
