@@ -210,4 +210,31 @@ void BinaryTree::update_value(double variation)
     }
 }
 
+void BinaryTree::update_zero()
+{
+    if (is_leaf())
+    {
+        (current_node_->value) = 0;
+        while(not is_root())
+        {
+            move_up();
+            (current_node_->value) = 0;
+        }
+    }
+    else
+    {
+        cout << "not a leaf" << endl;
+    }
+}
+
+//remove value for all nodes
+void BinaryTree::clear()
+{
+    for (auto& leaf : leaves_vector_)
+    {
+        move_at(leaf);
+        update_zero();
+    }
+}
+
 }//end of namespace sset

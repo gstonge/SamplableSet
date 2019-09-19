@@ -281,7 +281,7 @@ void SamplableSetCR<T>::erase(const T& element)
 template <typename T>
 void SamplableSetCR<T>::clear()
 {
-    sampling_tree_ = BinaryTree(number_of_group_);
+    sampling_tree_.clear();
     position_map_.clear();
     iterator_group_index_ = 0;
     for (auto &group_vector : propensity_group_vector_)

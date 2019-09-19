@@ -86,8 +86,12 @@ public:
         {current_node_ = current_node_->child_right;}
     void move_up()
         {current_node_ = current_node_->parent;}
+    void move_at(BinaryTreeNode* node)
+        {current_node_ = node;}
     void update_value(LeafIndex leaf_index, double variation);
     void update_value(double variation);
+    void update_zero();
+    void clear();
 
 
 private:
