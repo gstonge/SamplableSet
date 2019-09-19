@@ -61,7 +61,7 @@ public:
 
     /*
      * On the birthday problem. By default, the copy constructor uses the
-     * generator from the previous object to initialize the seconde one. It has
+     * generator from the previous object to initialize the second one. It has
      * to be noted that for many copies, this may lead to collisions for the
      * seed. Even if seeds can be chosen within 2^32 numbers, the expected
      * number of copies for which it is expected that we have 1 collison on
@@ -86,6 +86,7 @@ public:
     void erase(const T& element);
     void next();
     void init_iterator();
+    void clear();
 
 
 private:
@@ -275,6 +276,22 @@ void SamplableSetCR<T>::erase(const T& element)
         position_map_.erase(element);
     }
 }
+
+//Remove all elements from the set
+template <typename T>
+void SamplableSetCR<T>::clear()
+{
+    sampling_tree_ = BinaryTree(number_of_group_);
+    position_map_.clear();
+    iterator_group_index_ = 0;
+    for (auto &group_vector : propensity_group_vector_)
+    {
+        group_vector.clear();
+    }
+}
+
+
+
 
 template <typename T>
 void SamplableSetCR<T>::next()

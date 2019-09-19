@@ -8,6 +8,16 @@ Author: Guillaume St-Onge <guillaume.st-onge.4@ulaval.ca>
 
 from SamplableSet import SamplableSet
 
+class TestContainerModification:
+    def test_clear(self):
+        elements = ['a']
+        weights = [33.3]
+        elements_weights = zip(elements, weights)
+        s = SamplableSet(1, 100, elements_weights)
+        s.clear()
+        assert s.total_weight() == 0 and len(s) == 0 and s.sample() is None
+
+
 class TestSampling:
     def test_sampling_single(self):
         elements = ['a']

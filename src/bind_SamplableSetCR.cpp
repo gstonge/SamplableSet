@@ -120,6 +120,10 @@ void declare_samplable_set(py::module &m, string typestr)
                element: Element of the set.
             )pbdoc", py::arg("element"))
 
+        .def("clear", &SamplableSetCR<T>::clear, R"pbdoc(
+            Remove all elements from the container.
+            )pbdoc")
+
         .def("next", &SamplableSetCR<T>::next, R"pbdoc(
             Move the iterator one element ahead.
             )pbdoc")
