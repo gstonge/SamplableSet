@@ -81,7 +81,7 @@ class SamplableSet:
         """
         for func_name in ['size', 'total_weight', 'count', 'insert', 'next',
                           'init_iterator', 'set_weight', 'get_weight',
-                          'get_at_iterator', 'erase']:
+                          'get_at_iterator', 'erase', 'clear']:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
 
     def __contains__(self, element):
