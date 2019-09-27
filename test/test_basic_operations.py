@@ -6,7 +6,10 @@ Test the initializaiton, insertion, sampling, etc. methods for samplable set
 Author: Guillaume St-Onge <guillaume.st-onge.4@ulaval.ca>
 """
 
+import pytest
+import numpy as np
 from SamplableSet import SamplableSet
+
 
 class TestContainerModification:
     def test_clear(self):
@@ -52,5 +55,13 @@ class TestInitialization:
         elements_weights = zip(elements, weights)
         s = SamplableSet(1, 100, elements_weights)
         assert 'a' in s and 'b' in s
+
+    def test_throw_error_1(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(0, 100)
+
+    def test_throw_error_2(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(1, np.inf)
 
 
