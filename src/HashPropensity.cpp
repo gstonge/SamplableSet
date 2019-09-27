@@ -24,6 +24,7 @@
 
 #include "HashPropensity.hpp"
 #include <cmath>
+#include <stdexcept>
 
 using namespace std;
 
@@ -36,6 +37,10 @@ HashPropensity::HashPropensity(double propensity_min, double propensity_max) :
     propensity_min_(propensity_min), propensity_max_(propensity_max),
     power_of_two_(false)
 {
+    if (propensity_min == 0. or isinf(propensity_max))
+    {
+        throw invalid_argument("Invalid minimal or maximal weight");
+    }
     if (floor(log2(propensity_max/propensity_min)) ==
         ceil(log2(propensity_max/propensity_min)) and
         propensity_max != propensity_min)
