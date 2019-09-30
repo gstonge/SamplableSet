@@ -90,6 +90,8 @@ BinaryTree& BinaryTree::operator=(const BinaryTree& tree)
 {
     //destroy the current tree
     this->destroy_tree(root_);
+    this->leaves_vector_.clear();
+    this->leaves_index_map_.clear();
 
     //Construct a new tree with n_leaves
     unsigned int n_leaves = tree.leaves_vector_.size();
