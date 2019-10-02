@@ -107,11 +107,15 @@ private:
 //Default constructor for the class SamplableSetCR
 template <typename T>
 SamplableSetCR<T>::SamplableSetCR(double min_weight, double max_weight,
-        unsigned int seed) : gen_(seed), hash_(min_weight, max_weight),
-    number_of_group_(hash_(max_weight)+1), position_map_(),
-    sampling_tree_(number_of_group_), random_01_(0.,1.),
-    propensity_group_vector_(number_of_group_),
+        unsigned int seed) : 
+    gen_(seed),
+    random_01_(0.,1.),
+    hash_(min_weight, max_weight),
+    number_of_group_(hash_(max_weight)+1),
     max_propensity_vector_(number_of_group_, 2*min_weight),
+    position_map_(),
+    sampling_tree_(number_of_group_), 
+    propensity_group_vector_(number_of_group_),
     iterator_(NULL),
     iterator_group_index_(0)
 {
@@ -128,11 +132,15 @@ SamplableSetCR<T>::SamplableSetCR(double min_weight, double max_weight,
 
 //Copy constructor without seed
 template <typename T>
-SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s) : gen_(s.gen_()),
-    hash_(s.hash_), number_of_group_(s.number_of_group_),
-    position_map_(s.position_map_), sampling_tree_(s.sampling_tree_),
-    random_01_(0.,1.), propensity_group_vector_(s.propensity_group_vector_),
+SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s) :
+    gen_(s.gen_()),
+    random_01_(0.,1.),
+    hash_(s.hash_),
+    number_of_group_(s.number_of_group_),
     max_propensity_vector_(s.max_propensity_vector_),
+    position_map_(s.position_map_),
+    sampling_tree_(s.sampling_tree_),
+    propensity_group_vector_(s.propensity_group_vector_),
     iterator_(NULL),
     iterator_group_index_(0)
 {
@@ -141,11 +149,15 @@ SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s) : gen_(s.gen_()),
 //Copy constructor with seed
 template <typename T>
 SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s,
-        unsigned int seed) : gen_(seed),
-    hash_(s.hash_), number_of_group_(s.number_of_group_),
-    position_map_(s.position_map_), sampling_tree_(s.sampling_tree_),
-    random_01_(0.,1.), propensity_group_vector_(s.propensity_group_vector_),
+        unsigned int seed) :
+    gen_(seed),
+    random_01_(0.,1.),
+    hash_(s.hash_),
+    number_of_group_(s.number_of_group_),
     max_propensity_vector_(s.max_propensity_vector_),
+    position_map_(s.position_map_),
+    sampling_tree_(s.sampling_tree_),
+    propensity_group_vector_(s.propensity_group_vector_),
     iterator_(NULL),
     iterator_group_index_(0)
 {
