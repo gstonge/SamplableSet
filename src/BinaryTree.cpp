@@ -34,14 +34,18 @@ namespace sset
 
 //Default constructor of the class BinaryTree
 BinaryTree::BinaryTree() :
-    current_node_(nullptr), root_(nullptr), leaves_vector_(),
+    root_(nullptr),
+    current_node_(nullptr),
+    leaves_vector_(),
     leaves_index_map_()
 {
 }
 
 //Constructor of the class BinaryTree with specified leaves number
 BinaryTree::BinaryTree(unsigned int n_leaves) :
-    current_node_(nullptr), root_(nullptr), leaves_vector_(),
+    root_(nullptr),
+    current_node_(nullptr),
+    leaves_vector_(),
     leaves_index_map_()
 {
     if (n_leaves < 1)
@@ -62,7 +66,9 @@ BinaryTree::BinaryTree(unsigned int n_leaves) :
 
 //Copy constructor of the class BinaryTree
 BinaryTree::BinaryTree(const BinaryTree& tree) :
-    current_node_(nullptr), root_(nullptr), leaves_vector_(),
+    root_(nullptr),
+    current_node_(nullptr),
+    leaves_vector_(),
     leaves_index_map_()
 {
     //Construct a new tree with n_leaves
