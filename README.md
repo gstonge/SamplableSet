@@ -1,8 +1,14 @@
 # SamplableSet
 
-An implementation of sets that can be randomly sampled according to the weights of the elements. One only needs to specify the minimal and maximal expected weights in the set. Insertion, erase and sample of elements are constant time in average-case for all practical purposes. It makes use of the [pybind11](https://github.com/pybind/pybind11) project to bind C++ objects to python.
+An implementation of sets that can be randomly sampled according to the weights of the elements. One only needs to specify the minimal and maximal expected weights in the set. Insertion, erase and sampling of elements are <a href="https://www.codecogs.com/eqnedit.php?latex=\mathcal{O}(\log(\log(w_\mathrm{max}/w_\mathrm{min})))" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\mathcal{O}(\log(\log(w_\mathrm{max}/w_\mathrm{min})))" title="\mathcal{O}(\log(\log(w_\mathrm{max}/w_\mathrm{min})))" /></a> operations in average-case, where <a href="https://www.codecogs.com/eqnedit.php?latex=w_\mathrm{max}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?w_\mathrm{max}" title="w_\mathrm{max}" /></a> and <a href="https://www.codecogs.com/eqnedit.php?latex=w_\mathrm{min}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?w_\mathrm{min}" title="w_\mathrm{min}" /></a> are the maximal and minimal weights accepted by the set respectively.
+It makes use of the [pybind11](https://github.com/pybind/pybind11) project to bind C++ objects to python, making it efficient and convenient.
 
-This family of classes is very useful when one needs to udpate dynamically (insertion, erase) a set elements, as well as sample from it. It uses a composition and rejection scheme, making it efficient even if the weights span multiples order of magnitude. For instance, this kind of situation can arise in markov chains, when a collection of independant processes have multiscale propensities.
+These sets are based on a *composition and rejection* sampling scheme.
+The underlying data structure is a full binary tree with *bins* containing the
+elements of the set at the leaves. The number of leaves is determined by the maximal
+and minimal weights accepted. See this [paper](https://doi.org/10.1016/j.cpc.2019.02.008) for more details.
+
+This family of classes is very useful when one needs to udpate dynamically (insertion, erase) a set of elements, as well as sample from it. This kind of situation often arise in markov chain simulations, when a collection of independant processes have multiscale propensities.
 
 ## Requirements and dependencies
 
