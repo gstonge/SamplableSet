@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 from _SamplableSetCR import *
+from random import randint
 
 template_classes = {
     'int': IntSamplableSet,
@@ -48,7 +49,7 @@ class SamplableSet:
         """
         self.max_weight = max_weight
         self.min_weight = min_weight
-        self.seed = seed or 42
+        self.seed = seed or randint(0,2**32)
         self.cpp_type = cpp_type
 
         # Unpacking
@@ -131,9 +132,9 @@ class SamplableSet:
     def __iter__(self):
         return self.element_generator()
 
-    def sample(self, n_samples=1):
+    def sample(self, n_samples=1, replace=True):
         """
-        Randomly samples the set according to the weights of each element in O(1) time.
+        Randomly samples the set according to the weights of each element.
 
         Args:
             n_samples (int, optional): If equal to 1, returns one element. If greater than 1, returns a generator that will return 'n_samples' elements.
@@ -141,13 +142,19 @@ class SamplableSet:
         Returns: An element of the set or a generator of 'n_samples' elements.
         """
         if n_samples == 1:
-            return self._samplable_set.sample()
+            x = self._samplable_set.sample()
+            if not replace and x is not None:
+                self._samplable_set.erase(x[0])
+            return x
         else:
-            return self.sample_generator(n_samples)
+            return self.sample_generator(n_samples, replace)
 
-    def sample_generator(self, n_samples):
+    def sample_generator(self, n_samples, replace):
             for _ in range(n_samples):
-                yield self._samplable_set.sample()
+                x = self._samplable_set.sample()
+                if not replace and x is not None:
+                    self._samplable_set.erase(x[0])
+                yield x
 
     def element_generator(self):
         self.init_iterator()
