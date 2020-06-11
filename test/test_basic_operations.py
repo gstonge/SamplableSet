@@ -28,7 +28,7 @@ class TestSampling:
         elements_weights = zip(elements, weights)
         s = SamplableSet(1, 100, elements_weights)
         element, weight = s.sample()
-        assert element == 'a' and weight == 33.3
+        assert element == 'a' and weight == 33.3 and len(s) == 1
 
     def test_sampling_generator(self):
         elements = ['a']
@@ -40,7 +40,25 @@ class TestSampling:
         for element, weight in s.sample(n_samples=5):
             element_list.append(element)
             weight_list.append(weight)
-        assert element_list == ['a']*5 and weight_list == [33.3]*5
+        assert element_list == ['a']*5 and weight_list == [33.3]*5 and len(s) == 1
+
+    def test_sampling_no_replacement_single(self):
+        elements = ['a']
+        weights = [33.3]
+        elements_weights = zip(elements, weights)
+        s = SamplableSet(1, 100, elements_weights)
+        element, weight = s.sample(replace=False)
+        assert element == 'a' and weight == 33.3 and len(s) == 0
+
+    def test_sampling_no_replacement_generator(self):
+        elements = ['a']
+        weights = [33.3]
+        elements_weights = zip(elements, weights)
+        s = SamplableSet(1, 100, elements_weights)
+        sample_list = []
+        for sample in s.sample(n_samples=5,replace=False):
+            sample_list.append(sample)
+        assert sample_list == [('a',33.3),None,None,None,None] and len(s) == 0
 
 
 class TestInitialization:
