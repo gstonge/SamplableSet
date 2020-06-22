@@ -116,7 +116,7 @@ SamplableSetCR<T>::SamplableSetCR(double min_weight, double max_weight,
     position_map_(),
     sampling_tree_(number_of_group_), 
     propensity_group_vector_(number_of_group_),
-    iterator_(NULL),
+    iterator_(),
     iterator_group_index_(0)
 {
     //Initialize max propensity vector
@@ -141,7 +141,7 @@ SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s) :
     position_map_(s.position_map_),
     sampling_tree_(s.sampling_tree_),
     propensity_group_vector_(s.propensity_group_vector_),
-    iterator_(NULL),
+    iterator_(),
     iterator_group_index_(0)
 {
 }
@@ -158,7 +158,7 @@ SamplableSetCR<T>::SamplableSetCR(const SamplableSetCR<T>& s,
     position_map_(s.position_map_),
     sampling_tree_(s.sampling_tree_),
     propensity_group_vector_(s.propensity_group_vector_),
-    iterator_(NULL),
+    iterator_(),
     iterator_group_index_(0)
 {
 }
