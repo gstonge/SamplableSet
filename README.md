@@ -161,3 +161,12 @@ s_copy_3 = copy(s)
 s_copy_4 = deepcopy(s)
 # Note that copy and deepcopy are the same implementation and are in fact both deepcopies because the class is actually a wrapper.
 ```
+
+## Performance test
+
+To highlight the advantage of using `SamplableSet` in situations where you often need to change the underlying distribution, below are the results of a simple [benchmark test](test/performance.py) against `numpy.random.choice`.
+It is as if we were sampling an element and updating its weight at each iteration, a situation often encountered in Markov chain simulations.
+
+<img src="img/performance.png" alt="performance" width="500"/>
+
+Even from a small vector of elements to sample from, there is a huge gain to use samplable `SamplableSet` since the whole cumulative distribution does not need to be computed each time. The slight increase for `SamplableSet` for large vectors is due to the initial computing of the cumulative distribution; for larger sample size this would not be noticeable.
