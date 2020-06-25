@@ -10,6 +10,12 @@ and minimal weights accepted. See this [paper](https://doi.org/10.1016/j.cpc.201
 
 This family of classes is very useful when one needs to udpate dynamically (insertion, erase) a set of elements, as well as sample from it. This kind of situation often arise in markov chain simulations, when a collection of independant processes have multiscale propensities.
 
+## Changelog
+
+**Note:** The v2 brings a couple of backward incompatible changes.
+
+Changes are listed in the [changelog](CHANGELOG.md).
+
 ## Requirements and dependencies
 
 * A compiler with C++17 support
@@ -29,7 +35,12 @@ pip install ./SamplableSet
 
 ## A peak under the hood
 
-On the C++ side, samplable sets are created using a template class. This template accept any kind of class elements to be put in the set if a hash object exists in the standard library. Otherwise, one needs to specialize the std::hash structure.
+On the C++ side, samplable sets are created using a template class `SamplableSet<T>`.
+The template class is derived from a base class called `BaseSamplableSet`,
+whose sole purpose is to hold the the pseudorandom number generator as a static
+member, and offer a static method to seed it.
+The derived template class accept any kind of class elements `T` to be put in the set if
+a hash object exists in the standard library. Otherwise, one needs to specialize the std::hash structure.
 
 ```
 ├── src
@@ -39,7 +50,7 @@ To expose a new C++ samplable set to python, one needs to bind the class to pybi
 
 ```
 ├── src
-    ├── bind_SamplableSetCR.hpp
+    ├── bind_SamplableSet.hpp
 ```
 
 To further wrap this new object to SamplableSet, it needs to be added to the python wrapper.
@@ -53,6 +64,7 @@ Once this is done, the class can be used elegantly in python. Basic types are al
 
 * `int`
 * `str`
+
 
 ## Usage
 
@@ -77,6 +89,17 @@ elements = ['a', 'b']
 weights = [33.3, 66.6]
 elements_weights = zip(elements, weights)
 s = SamplableSet(1, 100, elements_weights) # cpp_type is infered from 'elements_weights'
+```
+
+### Seeding the PRNG
+
+The pseudorandom number generator is a static member of `BaseSamplableSet`,
+hence all objects share the same PRNG, which exists even if no object is
+instanciated. It is seeded by defauld with the current time, but to seed it
+with a fixed value, just use the static member function
+
+```python
+SamplableSet.seed(42)
 ```
 
 ### Basic operations : insertion, setting new weights, removing elements, etc.
@@ -148,16 +171,24 @@ for x in s.sample(n_samples=2,replace=False):
 
 ### Copy
 
-There are two ways to copy a samplable set. The first one is without specifying a seed for the new RNG. In this case, the seed is obtained from the previous RNG, which is OK, except if you need to make a lot of copies of a same object--see the [Birthday problem](https://en.wikipedia.org/wiki/Birthday_problem). With the current implementation, there is a 1% chance collision for the seed if you make 9300 copies. The second method requires you to specify the seed.
+As of v2, there is only one way now to copy a samplable set (see the [changelog](CHANGELOG.md))
 
 ```python
 s = SamplableSet(1,100, [(1,33.3)])
 s_copy1 = s.copy()
-s_copy2 = s.copy(seed=2018)
 
-# Copy and deepcopy are also supported, but without the seed option
+# Copy and deepcopy are also supported
 from copy import copy, deepcopy
 s_copy_3 = copy(s)
 s_copy_4 = deepcopy(s)
 # Note that copy and deepcopy are the same implementation and are in fact both deepcopies because the class is actually a wrapper.
 ```
+
+## Performance test
+
+To highlight the advantage of using `SamplableSet` in situations where you often need to change the underlying distribution, below are the results of a simple [benchmark test](test/performance.py) against `numpy.random.choice`.
+It is as if we were sampling an element and updating its weight at each iteration, a situation often encountered in Markov chain simulations.
+
+<img src="img/performance.png" alt="performance" width="500"/>
+
+Even from a small vector of elements to sample from, there is a huge gain to use samplable `SamplableSet` since the whole cumulative distribution does not need to be computed each time. The slight increase for `SamplableSet` for large vectors is due to the initial computing of the cumulative distribution; for larger sample size this would not be noticeable.
