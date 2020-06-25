@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from _SamplableSetCR import *
+from _SamplableSet import *
 from random import randint
 
 template_classes = {
@@ -36,7 +36,7 @@ class SamplableSet:
 
     This class is a wrapper around a C++ implementation.
     """
-    def __init__(self, min_weight, max_weight, elements_weights=None, seed=None, cpp_type='int'):
+    def __init__(self, min_weight, max_weight, elements_weights=None, cpp_type='int'):
         """
         Creates a new SamplableSet instance.
 
@@ -44,12 +44,10 @@ class SamplableSet:
             min_weight (float): Minimum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure.
             max_weight (float): Maximum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure.
             elements_weights (iterable of iterables or dict, optional): If an iterable, should be yield iterables of 2 items (element, weight) with which the set will be instanciated. If a dict, keys should be the elements and values should be the weights. If not specified, the set will be empty.
-            seed (float, optional): Seed used to sample elements from the set.
             cpp_type (str, optional, either 'int' or 'str'): Type used in the C++ implementation. If 'elements_weights' is specified, the type will be infered from it.
         """
         self.max_weight = max_weight
         self.min_weight = min_weight
-        self.seed = seed or randint(0,2**32)
         self.cpp_type = cpp_type
 
         # Unpacking
@@ -67,7 +65,7 @@ class SamplableSet:
                 raise ValueError('Cannot infer the type from the elements')
 
         # Instanciate the set
-        self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight, self.seed)
+        self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight)
         self._wrap_methods()
 
         # Initialize the set
@@ -112,10 +110,9 @@ class SamplableSet:
     def __len__(self):
         return self.size()
 
-    def copy(self, seed=None):
-        seed = seed or self.seed
-        cpp_copy_samplable_set = type(self._samplable_set)(self._samplable_set, seed) # Copy of the C++ class with the copy constructor
-        wrapped_samplable_set_copy = type(self)(self.min_weight, self.max_weight, seed=seed, cpp_type=self.cpp_type) # New wrapper object to be returned
+    def copy(self):
+        cpp_copy_samplable_set = type(self._samplable_set)(self._samplable_set) # Copy of the C++ class with the copy constructor
+        wrapped_samplable_set_copy = type(self)(self.min_weight, self.max_weight, cpp_type=self.cpp_type) # New wrapper object to be returned
 
         # Link the wrapper with the wrappee
         wrapped_samplable_set_copy._samplable_set = cpp_copy_samplable_set
@@ -162,4 +159,7 @@ class SamplableSet:
             yield self.get_at_iterator()
             self.next()
 
+    @staticmethod
+    def seed(seed_value):
+        IntSamplableSet.seed(seed_value) #does not matter which seeds the RNG
 
