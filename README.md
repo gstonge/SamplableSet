@@ -12,7 +12,7 @@ This family of classes is very useful when one needs to udpate dynamically (inse
 
 ## Changelog
 
-*Note:* The v2 brings a couple of backward incompatible changes.
+**Note:** The v2 brings a couple of backward incompatible changes.
 
 Changes are listed in the [changelog](CHANGELOG.md).
 
