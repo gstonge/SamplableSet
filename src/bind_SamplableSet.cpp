@@ -32,6 +32,11 @@ using namespace sset;
 
 namespace py = pybind11;
 
+typedef tuple<int,int> Tuple2Int;
+typedef tuple<int,int,int> Tuple3Int;
+typedef tuple<string,string> Tuple2String;
+typedef tuple<string,string,string> Tuple3String;
+
 //template function to declare different types of samplable set
 template<typename T>
 void declare_samplable_set(py::module &m, string typestr)
@@ -130,4 +135,8 @@ PYBIND11_MODULE(_SamplableSet, m)
 {
     declare_samplable_set<int>(m, "Int");
     declare_samplable_set<string>(m, "String");
+    declare_samplable_set<Tuple2Int>(m, "Tuple2Int");
+    declare_samplable_set<Tuple3Int>(m, "Tuple3Int");
+    declare_samplable_set<Tuple2String>(m, "Tuple2String");
+    declare_samplable_set<Tuple3String>(m, "Tuple3String");
 }

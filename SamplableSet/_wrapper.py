@@ -25,18 +25,29 @@ from random import randint
 
 template_classes = {
     'int': IntSamplableSet,
-    'str': StringSamplableSet
+    'str': StringSamplableSet,
+    '2int': Tuple2IntSamplableSet,
+    '3int': Tuple3IntSamplableSet,
+    '2str': Tuple2StringSamplableSet,
+    '3str': Tuple3StringSamplableSet,
+    'Int': IntSamplableSet,
+    'String': StringSamplableSet,
+    'Tuple2Int': Tuple2IntSamplableSet,
+    'Tuple3Int': Tuple3IntSamplableSet,
+    'Tuple2String': Tuple2StringSamplableSet,
+    'Tuple3String': Tuple3StringSamplableSet
 }
 
 class SamplableSet:
     """
-    This class implements a set which is samplable in O(1) time according to the weight distribution of the elements. Elements can either be an integer or a tuple of 3 integers.
+    This class implements a set which is samplable according to the weight distribution of the elements.
 
     The SamplableSet can be instanciated empty or from an iterable of pairs of elements and weights respectively.
 
     This class is a wrapper around a C++ implementation.
     """
-    def __init__(self, min_weight, max_weight, elements_weights=None, cpp_type='int'):
+    def __init__(self, min_weight, max_weight, elements_weights=None,
+                 cpp_type=None):
         """
         Creates a new SamplableSet instance.
 
@@ -44,8 +55,12 @@ class SamplableSet:
             min_weight (float): Minimum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure.
             max_weight (float): Maximum weight a given element can have. This is needed for a good repartition of the elements inside the internal tree structure.
             elements_weights (iterable of iterables or dict, optional): If an iterable, should be yield iterables of 2 items (element, weight) with which the set will be instanciated. If a dict, keys should be the elements and values should be the weights. If not specified, the set will be empty.
-            cpp_type (str, optional, either 'int' or 'str'): Type used in the C++ implementation. If 'elements_weights' is specified, the type will be infered from it.
+            cpp_type (str, optional): Type used in the C++ implementation. If 'elements_weights' is specified, the type will be infered from it.
         """
+        if min_weight <= 0 or max_weight == float('inf') or\
+           max_weight < min_weight:
+            raise ValueError('Invalid min_weight or max_weight')
+
         self.max_weight = max_weight
         self.min_weight = min_weight
         self.cpp_type = cpp_type
@@ -57,22 +72,37 @@ class SamplableSet:
 
             # Infering cpp_type
             first_element, first_weight = next(iter(elements_weights))
-            if isinstance(first_element, int):
-                self.cpp_type = 'int'
-            elif isinstance(first_element, str):
-                self.cpp_type = 'str'
-            else:
-                raise ValueError('Cannot infer the type from the elements')
+            self._infer_type(first_element)
 
         # Instanciate the set
-        self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight)
-        self._wrap_methods()
+        if self.cpp_type is not None:
+            self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight)
+            self._wrap_methods()
 
         # Initialize the set
         if elements_weights:
             self[first_element] = first_weight
             for element, weight in elements_weights:
                 self[element] = weight
+
+    def _infer_type(self,element):
+            if isinstance(element, int):
+                self.cpp_type = 'int'
+            elif isinstance(element, str):
+                self.cpp_type = 'str'
+            elif isinstance(element, tuple):
+                m = len(element)
+                if m in {2,3}:
+                    if isinstance(element[0], int):
+                        self.cpp_type = f'{m}int'
+                    elif isinstance(element[0], str):
+                        self.cpp_type = f'{m}str'
+                    else:
+                        raise ValueError('Cannot infer the type from the element')
+                else:
+                    raise ValueError('Cannot infer the type from the element')
+            else:
+                raise ValueError('Cannot infer the type from the element')
 
     def _wrap_methods(self):
         """
@@ -90,6 +120,12 @@ class SamplableSet:
         return self.get_weight(element) or 0
 
     def __setitem__(self, element, weight):
+        if self.cpp_type is None:
+            self._infer_type(element)
+            #instanciate the set
+            self._samplable_set = template_classes[self.cpp_type](
+                self.min_weight,self.max_weight)
+            self._wrap_methods()
         if self.min_weight <= weight <= self.max_weight:
             if element in self:
                 self.set_weight(element, weight)
@@ -147,11 +183,11 @@ class SamplableSet:
             return self.sample_generator(n_samples, replace)
 
     def sample_generator(self, n_samples, replace):
-            for _ in range(n_samples):
-                x = self._samplable_set.sample()
-                if not replace and x is not None:
-                    self._samplable_set.erase(x[0])
-                yield x
+        for _ in range(n_samples):
+            x = self._samplable_set.sample()
+            if not replace and x is not None:
+                self._samplable_set.erase(x[0])
+            yield x
 
     def element_generator(self):
         self.init_iterator()
