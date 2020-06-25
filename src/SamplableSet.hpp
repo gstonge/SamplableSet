@@ -46,9 +46,10 @@ typedef pcg32 RNGType;
 //Base class to contain the shared RNG for derived template classes
 class BaseSamplableSet
 {
+    public:
+        static void seed(unsigned int seed_value);
     protected:
         static RNGType gen_;
-        static void seed(unsigned int seed_value);
 };
 
 RNGType BaseSamplableSet::gen_ = RNGType(time(NULL));
