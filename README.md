@@ -53,17 +53,21 @@ To expose a new C++ samplable set to python, one needs to bind the class to pybi
     ├── bind_SamplableSet.hpp
 ```
 
-To further wrap this new object to SamplableSet, it needs to be added to the python wrapper.
+To further wrap this new object to SamplableSet, it needs to be added to the python wrapper, and a `cpp_type` label must be given.
 
 ```
 ├── SamplableSet
     ├── _wrapper.py
 ```
 
-Once this is done, the class can be used elegantly in python. Basic types are already implemented :
+Once this is done, the class can be used elegantly in python. Basic `cpp_type` are already implemented :
 
 * `int`
 * `str`
+* `2int` (tuple of 2 `int`)
+* `3int` (tuple of 3 `int`)
+* `2str` (tuple of 2 `str`)
+* `3str` (tuple of 3 `str`)
 
 
 ## Usage
@@ -72,23 +76,29 @@ The package offers both a C++ and a python style interface for the class in pyth
 
 ### Set creation
 
-First to create an empty samplable set, one needs to specify the minimal (maximal) weight for elements in the set, as well as the C++ type of the elements that will be inserted in the set. An non-empty set can be instanciated from an iterable of 2 iterables or a dict containing the elements and the weights.
+First to create an empty samplable set, one needs to specify the minimal (maximal) weight for elements in the set.
+One can specify the C++ type of the elements that will be inserted in the set,
+or it will be inferred the first time an element is inserted.
+An non-empty set can also be instanciated from an iterable of 2 iterables or a dict containing the elements and the weights.
 
 ```python
 from SamplableSet import SamplableSet
+
+# Calling the default constructor for empty samplable set without type
+s = SamplableSet(min_weight=1, max_weight=100)
 
 # Calling the default constructor for empty samplable set
 s = SamplableSet(min_weight=1, max_weight=100, cpp_type='int')
 
 # Calling the constructor with a dict
 elements_weights = {3:33.3, 6:66.6}
-s = SamplableSet(1, 100, elements_weights) # cpp_type is infered from 'elements_weights'
+s = SamplableSet(1, 100, elements_weights) # cpp_type is inferred from 'elements_weights'
 
 # Calling the constructor with an iterable of pairs (elements, weights)
 elements = ['a', 'b']
 weights = [33.3, 66.6]
 elements_weights = zip(elements, weights)
-s = SamplableSet(1, 100, elements_weights) # cpp_type is infered from 'elements_weights'
+s = SamplableSet(1, 100, elements_weights) # cpp_type is inferred from 'elements_weights'
 ```
 
 ### Seeding the PRNG
