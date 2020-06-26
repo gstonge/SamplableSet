@@ -88,4 +88,9 @@ class TestInitialization:
         with pytest.raises(ValueError):
             s = SamplableSet(1, np.inf)
 
+    def test_throw_error_3(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(2, 1)
+
+
 
