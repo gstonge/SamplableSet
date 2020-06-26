@@ -6,6 +6,15 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.0.0
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) since v2.0.0.
 
 ## [Unreleased]
+### Added
+- New tuple 2 and 3-tuple of `int` and `str` as available `cpp_type`.
+- A samplable set can be instanciated empty without specifying the `cpp_type`.
+  It will be inferred at the first insertion.
+
+### Fixed
+Test for out of bound weight.
+
+## [v2.0.1] - 2020-06-26
 ### Changed
 - Class name in C++
 - RNG is now a static member of C++ `BaseSamplableSet` class. This means all
@@ -55,7 +64,8 @@ Merged the fork from jsleb333, providing a pythonic wrapper.
 
 First release with the old wrapper using C++ style.
 
-[Unreleased]: https://github.com/gstonge/SamplableSet/compare/v1.0.8...HEAD
+[Unreleased]: https://github.com/gstonge/SamplableSet/compare/v2.0.1...HEAD
+[v1.0.8]: https://github.com/gstonge/SamplableSet/compare/v1.0.8...v2.0.1
 [v1.0.8]: https://github.com/gstonge/SamplableSet/compare/v1.0.6...v1.0.8
 [v1.0.6]: https://github.com/gstonge/SamplableSet/compare/v1.0.2...v1.0.6
 [v1.0.2]: https://github.com/gstonge/SamplableSet/compare/v1.0.0...v1.0.2
