@@ -6,4 +6,5 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(SAMPLABLE_SET
     BinaryTree.cpp
     HashPropensity.cpp
+    SamplableSet.cpp
 )

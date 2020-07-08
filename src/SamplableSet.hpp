@@ -52,13 +52,6 @@ class BaseSamplableSet
         static RNGType gen_;
 };
 
-RNGType BaseSamplableSet::gen_ = RNGType(time(NULL));
-
-//seed the RNG
-void BaseSamplableSet::seed(unsigned int seed_value)
-{
-    BaseSamplableSet::gen_.seed(seed_value);
-}
 
 /*
  * Set of elements, samplable efficiently using composition and rejection
