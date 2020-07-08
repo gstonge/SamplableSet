@@ -64,7 +64,7 @@ ext_modules = [
     Extension(
         '_SamplableSet',
         ['src/bind_SamplableSet.cpp', 'src/HashPropensity.cpp',
-         'src/BinaryTree.cpp'],
+         'src/BinaryTree.cpp', 'src/SamplableSet.cpp'],
         include_dirs=[
             'src/',
             get_pybind_include(),
