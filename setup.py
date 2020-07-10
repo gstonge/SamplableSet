@@ -42,7 +42,7 @@ from setuptools.command.build_ext import build_ext
 import sys
 import setuptools
 
-__version__ = '2.1.0'
+__version__ = '2.1.1'
 
 
 class get_pybind_include(object):
@@ -64,7 +64,7 @@ ext_modules = [
     Extension(
         '_SamplableSet',
         ['src/bind_SamplableSet.cpp', 'src/HashPropensity.cpp',
-         'src/BinaryTree.cpp'],
+         'src/BinaryTree.cpp', 'src/SamplableSet.cpp'],
         include_dirs=[
             'src/',
             get_pybind_include(),
