@@ -5,11 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) since v2.0.0.
 
-## [Unreleased]
+
+## [2.1.1] - 2020-07-10
 ### Added
 - New tuple 2 and 3-tuple of `int` and `str` as available `cpp_type`.
 - A samplable set can be instanciated empty without specifying the `cpp_type`.
   It will be inferred at the first insertion.
+
+### Changed
+- Structure of C++ source files to allow the compilation of a static library.
 
 ### Fixed
 Test for out of bound weight.
@@ -64,8 +68,8 @@ Merged the fork from jsleb333, providing a pythonic wrapper.
 
 First release with the old wrapper using C++ style.
 
-[Unreleased]: https://github.com/gstonge/SamplableSet/compare/v2.0.1...HEAD
-[v1.0.8]: https://github.com/gstonge/SamplableSet/compare/v1.0.8...v2.0.1
+[v2.1.1]: https://github.com/gstonge/SamplableSet/compare/v2.0.1...v2.1.1
+[v2.0.1]: https://github.com/gstonge/SamplableSet/compare/v1.0.8...v2.0.1
 [v1.0.8]: https://github.com/gstonge/SamplableSet/compare/v1.0.6...v1.0.8
 [v1.0.6]: https://github.com/gstonge/SamplableSet/compare/v1.0.2...v1.0.6
 [v1.0.2]: https://github.com/gstonge/SamplableSet/compare/v1.0.0...v1.0.2
