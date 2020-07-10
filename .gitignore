@@ -38,6 +38,12 @@
 *.bak
 docs/_build/
 
+# CMake related
+*/CMakeCache.txt
+*/CMakeFiles/
+*/Makefile
+*/cmake_install.cmake
+
 #=================
 # Python specific
 #=================
