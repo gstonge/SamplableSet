@@ -71,6 +71,7 @@ public:
 
     //Accessors
     std::size_t size() const {return position_map_.size();}
+    bool empty() const {return size() == 0;}
     std::size_t inline count(const T& element) const
         {return position_map_.count(element);}
     std::optional<std::pair<T,double> > sample() const;
@@ -145,7 +146,7 @@ SamplableSet<T>::SamplableSet(const SamplableSet<T>& s) :
 template <typename T>
 std::optional<std::pair<T,double> > SamplableSet<T>::sample() const
 {
-    if (sampling_tree_.get_value() > 0)
+    if (not empty())
     {
         GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen_));
         bool element_not_chosen = true;
@@ -176,7 +177,7 @@ template <typename T>
 template <typename ExtRNG>
 std::optional<std::pair<T,double> > SamplableSet<T>::sample_ext_RNG(ExtRNG& gen) const
 {
-    if (sampling_tree_.get_value() > 0)
+    if (not empty())
     {
         GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen));
         bool element_not_chosen = true;

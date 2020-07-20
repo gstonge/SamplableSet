@@ -109,7 +109,7 @@ class SamplableSet:
         Assigns the methods of the C++ class to the wrapper.
         """
         for func_name in ['size', 'total_weight', 'count', 'insert', 'next',
-                          'init_iterator', 'set_weight', 'get_weight',
+                          'init_iterator', 'set_weight', 'get_weight', 'empty',
                           'get_at_iterator', 'erase', 'clear']:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
 

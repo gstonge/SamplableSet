@@ -64,6 +64,10 @@ void declare_samplable_set(py::module &m, string typestr)
             Returns the number of elements in the set.
             )pbdoc")
 
+        .def("empty", &SamplableSet<T>::empty, R"pbdoc(
+            Returns true if the set is empty.
+            )pbdoc")
+
         .def("total_weight", &SamplableSet<T>::total_weight, R"pbdoc(
             Returns the sum of the weights of the elements in the set.
             )pbdoc")

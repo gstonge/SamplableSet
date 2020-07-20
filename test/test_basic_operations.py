@@ -18,7 +18,19 @@ class TestContainerModification:
         elements_weights = zip(elements, weights)
         s = SamplableSet(1, 100, elements_weights)
         s.clear()
-        assert s.total_weight() == 0 and len(s) == 0 and s.sample() is None
+        assert s.total_weight() == 0 and len(s) == 0 and s.sample() is None and s.empty()
+
+    def test_insert(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         assert len(s) == 1 and not s.empty()
+
+    def test_erase(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         del s['a']
+         assert len(s) == 0 and s.empty()
+
 
 
 class TestSampling:
