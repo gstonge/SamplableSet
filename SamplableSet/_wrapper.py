@@ -127,10 +127,7 @@ class SamplableSet:
                 self.min_weight,self.max_weight)
             self._wrap_methods()
         if self.min_weight <= weight <= self.max_weight:
-            if element in self:
-                self.set_weight(element, weight)
-            else:
-                self.insert(element, weight)
+            self.set_weight(element,weight)
         else:
             raise ValueError(f'Cannot assign weight outside range [{self.min_weight}, {self.max_weight}].')
 

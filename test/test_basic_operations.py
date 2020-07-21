@@ -104,8 +104,9 @@ class TestInitialization:
     def test_empty_init(self):
         s = SamplableSet(1,100)
         assert s.cpp_type is None
-        s['a'] = 2
+        s['a'] = 2.
         assert s.cpp_type == 'str'
+        assert len(s) == 1 and s['a'] == 2.
 
     def test_throw_error_1(self):
         with pytest.raises(ValueError):
