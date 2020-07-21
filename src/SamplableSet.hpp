@@ -241,7 +241,7 @@ template <typename T>
 void SamplableSet<T>::insert(const T& element, double weight)
 {
     weight_checkup(weight);
-    //insert element only if not present and the weight is acceptable
+    //insert element only if not present
     if (position_map_.find(element) == position_map_.end())
     {
         GroupIndex group_index = hash_(weight);

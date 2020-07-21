@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) since v2.0.0.
 
+## [v2.1.2] - 2020-07-21
+### Added
+- Bound check-up for the weight of elements in C++ (insertion, set weight).
+- New `empty` method to test if the set is empty.
+
+### Changed
+- Bound checking (exception throw) is now mainly done in C++.
+
+### Fixed
+- In python, if one checks the weight of an element not in the set, it
+  now returns `None`.
 
 ## [v2.1.1] - 2020-07-10
 ### Added
@@ -68,6 +79,7 @@ Merged the fork from jsleb333, providing a pythonic wrapper.
 
 First release with the old wrapper using C++ style.
 
+[v2.1.2]: https://github.com/gstonge/SamplableSet/compare/v2.1.1...v2.1.2
 [v2.1.1]: https://github.com/gstonge/SamplableSet/compare/v2.0.1...v2.1.1
 [v2.0.1]: https://github.com/gstonge/SamplableSet/compare/v1.0.8...v2.0.1
 [v1.0.8]: https://github.com/gstonge/SamplableSet/compare/v1.0.6...v1.0.8
