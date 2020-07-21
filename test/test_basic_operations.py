@@ -47,6 +47,24 @@ class TestContainerModification:
          s['a'] = 3.
          assert s['a'] == 3. and len(s) == 1 and s.total_weight() == 3.
 
+    def test_throw_error_1(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(1, 10)
+            s['a'] = 0.5
+
+    def test_throw_error_2(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(1, 10)
+            s['a'] = 2.
+            s['b'] = 0.5
+
+    def test_throw_error_3(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(1, 10)
+            s['a'] = 2.
+            s['a'] = 11
+
+
 
 class TestSampling:
     def test_sampling_single(self):

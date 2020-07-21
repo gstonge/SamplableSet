@@ -126,10 +126,7 @@ class SamplableSet:
             self._samplable_set = template_classes[self.cpp_type](
                 self.min_weight,self.max_weight)
             self._wrap_methods()
-        if self.min_weight <= weight <= self.max_weight:
-            self.set_weight(element,weight)
-        else:
-            raise ValueError(f'Cannot assign weight outside range [{self.min_weight}, {self.max_weight}].')
+        self.set_weight(element,weight)
 
     def __delitem__(self, element):
         self.erase(element)
