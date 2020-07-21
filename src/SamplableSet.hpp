@@ -34,6 +34,7 @@
 #include <optional>
 #include <stdio.h>
 #include <time.h>
+#include <stdexcept>
 
 namespace sset
 {//start of namespace sset
@@ -71,6 +72,7 @@ public:
 
     //Accessors
     std::size_t size() const {return position_map_.size();}
+    bool empty() const {return size() == 0;}
     std::size_t inline count(const T& element) const
         {return position_map_.count(element);}
     std::optional<std::pair<T,double> > sample() const;
@@ -90,6 +92,8 @@ public:
 
 
 private:
+    double min_weight_;
+    double max_weight_;
     mutable std::uniform_real_distribution<double> random_01_;
     HashPropensity hash_;
     unsigned int number_of_group_;
@@ -99,12 +103,16 @@ private:
     std::vector<PropensityGroup> propensity_group_vector_;
     mutable typename PropensityGroup::iterator iterator_;
     mutable GroupIndex iterator_group_index_;
+    //private method
+    void weight_checkup(double weight) const;
 };
 
 
 //Default constructor for the class SamplableSet
 template <typename T>
 SamplableSet<T>::SamplableSet(double min_weight, double max_weight) :
+    min_weight_(min_weight),
+    max_weight_(max_weight),
     random_01_(0.,1.),
     hash_(min_weight, max_weight),
     number_of_group_(hash_(max_weight)+1),
@@ -141,11 +149,21 @@ SamplableSet<T>::SamplableSet(const SamplableSet<T>& s) :
 {
 }
 
+//throw a invalid_argument error if the weight is out of bounds
+template <typename T>
+void SamplableSet<T>::weight_checkup(double weight) const
+{
+    if (weight < min_weight_ or weight > max_weight_)
+    {
+        throw std::invalid_argument("Weight out of bounds");
+    }
+}
+
 //sample an element according to its weight
 template <typename T>
 std::optional<std::pair<T,double> > SamplableSet<T>::sample() const
 {
-    if (sampling_tree_.get_value() > 0)
+    if (not empty())
     {
         GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen_));
         bool element_not_chosen = true;
@@ -176,7 +194,7 @@ template <typename T>
 template <typename ExtRNG>
 std::optional<std::pair<T,double> > SamplableSet<T>::sample_ext_RNG(ExtRNG& gen) const
 {
-    if (sampling_tree_.get_value() > 0)
+    if (not empty())
     {
         GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen));
         bool element_not_chosen = true;
@@ -222,6 +240,7 @@ std::optional<double> SamplableSet<T>::get_weight(const T& element) const
 template <typename T>
 void SamplableSet<T>::insert(const T& element, double weight)
 {
+    weight_checkup(weight);
     //insert element only if not present
     if (position_map_.find(element) == position_map_.end())
     {
@@ -240,6 +259,7 @@ void SamplableSet<T>::insert(const T& element, double weight)
 template <typename T>
 void SamplableSet<T>::set_weight(const T& element, double weight)
 {
+    weight_checkup(weight);
     erase(element);
     insert(element, weight);
 }

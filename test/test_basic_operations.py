@@ -18,7 +18,52 @@ class TestContainerModification:
         elements_weights = zip(elements, weights)
         s = SamplableSet(1, 100, elements_weights)
         s.clear()
-        assert s.total_weight() == 0 and len(s) == 0 and s.sample() is None
+        assert s.total_weight() == 0 and len(s) == 0 and s.sample() is None and s.empty()
+
+    def test_insert(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         assert len(s) == 1 and not s.empty()
+
+    def test_erase(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         del s['a']
+         assert len(s) == 0 and s.empty()
+
+    def test_get_weight(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         assert s['a'] == 2.
+
+    def test_get_weight_no_item(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         assert s['b'] is None
+
+    def test_set_weight(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         s['a'] = 3.
+         assert s['a'] == 3. and len(s) == 1 and s.total_weight() == 3.
+
+    def test_throw_error_1(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(1, 10)
+            s['a'] = 0.5
+
+    def test_throw_error_2(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(1, 10)
+            s['a'] = 2.
+            s['b'] = 0.5
+
+    def test_throw_error_3(self):
+        with pytest.raises(ValueError):
+            s = SamplableSet(1, 10)
+            s['a'] = 2.
+            s['a'] = 11
+
 
 
 class TestSampling:
@@ -77,8 +122,9 @@ class TestInitialization:
     def test_empty_init(self):
         s = SamplableSet(1,100)
         assert s.cpp_type is None
-        s['a'] = 2
+        s['a'] = 2.
         assert s.cpp_type == 'str'
+        assert len(s) == 1 and s['a'] == 2.
 
     def test_throw_error_1(self):
         with pytest.raises(ValueError):

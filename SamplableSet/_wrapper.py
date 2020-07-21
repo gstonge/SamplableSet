@@ -109,7 +109,7 @@ class SamplableSet:
         Assigns the methods of the C++ class to the wrapper.
         """
         for func_name in ['size', 'total_weight', 'count', 'insert', 'next',
-                          'init_iterator', 'set_weight', 'get_weight',
+                          'init_iterator', 'set_weight', 'get_weight', 'empty',
                           'get_at_iterator', 'erase', 'clear']:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
 
@@ -117,7 +117,7 @@ class SamplableSet:
         return True if self.count(element) else False
 
     def __getitem__(self, element):
-        return self.get_weight(element) or 0
+        return self.get_weight(element)
 
     def __setitem__(self, element, weight):
         if self.cpp_type is None:
@@ -126,13 +126,7 @@ class SamplableSet:
             self._samplable_set = template_classes[self.cpp_type](
                 self.min_weight,self.max_weight)
             self._wrap_methods()
-        if self.min_weight <= weight <= self.max_weight:
-            if element in self:
-                self.set_weight(element, weight)
-            else:
-                self.insert(element, weight)
-        else:
-            raise ValueError(f'Cannot assign weight outside range [{self.min_weight}, {self.max_weight}].')
+        self.set_weight(element,weight)
 
     def __delitem__(self, element):
         self.erase(element)
