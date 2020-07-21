@@ -31,6 +31,21 @@ class TestContainerModification:
          del s['a']
          assert len(s) == 0 and s.empty()
 
+    def test_get_weight(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         assert s['a'] == 2.
+
+    def test_get_weight_no_item(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         assert s['b'] is None
+
+    def test_set_weight(self):
+         s = SamplableSet(1, 10)
+         s['a'] = 2.
+         s['a'] = 3.
+         assert s['a'] == 3. and len(s) == 1 and s.total_weight() == 3.
 
 
 class TestSampling:

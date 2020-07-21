@@ -117,7 +117,7 @@ class SamplableSet:
         return True if self.count(element) else False
 
     def __getitem__(self, element):
-        return self.get_weight(element) or 0
+        return self.get_weight(element)
 
     def __setitem__(self, element, weight):
         if self.cpp_type is None:
