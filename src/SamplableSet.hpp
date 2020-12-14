@@ -138,6 +138,8 @@ SamplableSet<T>::SamplableSet(double min_weight, double max_weight) :
 //Copy constructor
 template <typename T>
 SamplableSet<T>::SamplableSet(const SamplableSet<T>& s) :
+    min_weight_(s.min_weight_),
+    max_weight_(s.max_weight_),
     random_01_(0.,1.),
     hash_(s.hash_),
     number_of_group_(s.number_of_group_),
