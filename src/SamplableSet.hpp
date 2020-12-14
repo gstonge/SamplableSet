@@ -34,6 +34,7 @@
 #include <optional>
 #include <stdio.h>
 #include <time.h>
+#include <string>
 #include <stdexcept>
 
 namespace sset
@@ -137,6 +138,8 @@ SamplableSet<T>::SamplableSet(double min_weight, double max_weight) :
 //Copy constructor
 template <typename T>
 SamplableSet<T>::SamplableSet(const SamplableSet<T>& s) :
+    min_weight_(s.min_weight_),
+    max_weight_(s.max_weight_),
     random_01_(0.,1.),
     hash_(s.hash_),
     number_of_group_(s.number_of_group_),
@@ -155,7 +158,9 @@ void SamplableSet<T>::weight_checkup(double weight) const
 {
     if (weight < min_weight_ or weight > max_weight_)
     {
-        throw std::invalid_argument("Weight out of bounds");
+        std::string out = "Weight " + std::to_string(weight) + " out of bounds [" +
+            std::to_string(min_weight_) + "," + std::to_string(max_weight_) + "]";
+        throw std::invalid_argument(out);
     }
 }
 
