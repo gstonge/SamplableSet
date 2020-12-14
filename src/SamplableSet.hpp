@@ -34,6 +34,7 @@
 #include <optional>
 #include <stdio.h>
 #include <time.h>
+#include <string>
 #include <stdexcept>
 
 namespace sset
@@ -155,7 +156,9 @@ void SamplableSet<T>::weight_checkup(double weight) const
 {
     if (weight < min_weight_ or weight > max_weight_)
     {
-        throw std::invalid_argument("Weight out of bounds");
+        std::string out = "Weight " + std::to_string(weight) + " out of bounds [" +
+            std::to_string(min_weight_) + "," + std::to_string(max_weight_) + "]";
+        throw std::invalid_argument(out);
     }
 }
 
