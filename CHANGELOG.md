@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) since v2.0.0.
 
+## [v2.1.4] - 2021-02-02
+### Fixed
+- The `__str__` method now works with SamplableSet of unspecified underlying
+  type.
+
 ## [v2.1.3] - 2020-12-14
 ### Added
 - Bound check-up now gives a more complete output message.
@@ -86,6 +91,7 @@ Merged the fork from jsleb333, providing a pythonic wrapper.
 
 First release with the old wrapper using C++ style.
 
+[v2.1.4]: https://github.com/gstonge/SamplableSet/compare/v2.1.3...v2.1.4
 [v2.1.3]: https://github.com/gstonge/SamplableSet/compare/v2.1.2...v2.1.3
 [v2.1.2]: https://github.com/gstonge/SamplableSet/compare/v2.1.1...v2.1.2
 [v2.1.1]: https://github.com/gstonge/SamplableSet/compare/v2.0.1...v2.1.1

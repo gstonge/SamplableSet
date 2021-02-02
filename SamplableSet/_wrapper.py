@@ -70,7 +70,7 @@ class SamplableSet:
             if isinstance(elements_weights, dict):
                 elements_weights = elements_weights.items()
 
-            # Infering cpp_type
+            # Inferring cpp_type
             first_element, first_weight = next(iter(elements_weights))
             self._infer_type(first_element)
 
@@ -132,7 +132,13 @@ class SamplableSet:
         self.erase(element)
 
     def __str__(self):
-        return f'SamplableSet of {len(self)} element' + ('s' if len(self) > 1 else '')
+        if self.cpp_type is None:
+            outstr = 'SamplableSet of unspecified type'
+        else:
+            outstr = f'SamplableSet of {self.cpp_type} '\
+                    + f'containing {len(self)} element'\
+                    + ('s' if len(self) > 1 else '')
+        return outstr
 
     def __repr__(self):
         return str(self)
