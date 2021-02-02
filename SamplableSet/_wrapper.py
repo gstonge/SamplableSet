@@ -38,6 +38,10 @@ template_classes = {
     'Tuple3String': Tuple3StringSamplableSet
 }
 
+cpp_methods = ['size', 'total_weight', 'count', 'insert', 'next',
+               'init_iterator', 'set_weight', 'get_weight', 'empty',
+               'get_at_iterator', 'erase', 'clear']
+
 class SamplableSet:
     """
     This class implements a set which is samplable according to the weight distribution of the elements.
@@ -78,6 +82,8 @@ class SamplableSet:
         if self.cpp_type is not None:
             self._samplable_set = template_classes[self.cpp_type](min_weight, max_weight)
             self._wrap_methods()
+        else:
+            self._wrap_methods_unspecified()
 
         # Initialize the set
         if elements_weights:
@@ -104,13 +110,22 @@ class SamplableSet:
             else:
                 raise ValueError('Cannot infer the type from the element')
 
+    def _unspecified_method(self):
+        raise RuntimeError('The method is undefined until the underlying type is known')
+
+    def _wrap_methods_unspecified(self):
+        """
+        Assigns the methods of the C++ class to a dummy method that raises
+        a RuntimeError
+        """
+        for func_name in cpp_methods:
+            setattr(self, func_name, self._unspecified_method)
+
     def _wrap_methods(self):
         """
         Assigns the methods of the C++ class to the wrapper.
         """
-        for func_name in ['size', 'total_weight', 'count', 'insert', 'next',
-                          'init_iterator', 'set_weight', 'get_weight', 'empty',
-                          'get_at_iterator', 'erase', 'clear']:
+        for func_name in cpp_methods:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
 
     def __contains__(self, element):

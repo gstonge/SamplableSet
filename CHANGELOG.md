@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - The `__str__` method now works with SamplableSet of unspecified underlying
   type.
+- All C++ methods (e.g. `size`) raise an error message until the type is
+  specified/inferred.
 
 ## [v2.1.3] - 2020-12-14
 ### Added

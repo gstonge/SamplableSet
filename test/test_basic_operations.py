@@ -119,12 +119,19 @@ class TestInitialization:
         s = SamplableSet(1, 100, elements_weights)
         assert 'a' in s and 'b' in s
 
-    def test_empty_init(self):
+    def test_empty_init_1(self):
         s = SamplableSet(1,100)
         assert s.cpp_type is None
         s['a'] = 2.
         assert s.cpp_type == 'str'
         assert len(s) == 1 and s['a'] == 2.
+
+    def test_empty_init_2(self):
+        s = SamplableSet(1,100, {})
+        assert s.cpp_type is None
+        s[1] = 5.
+        assert s.cpp_type == 'int'
+        assert len(s) == 1 and s[1] == 5.
 
     def test_throw_error_1(self):
         with pytest.raises(ValueError):
@@ -138,5 +145,12 @@ class TestInitialization:
         with pytest.raises(ValueError):
             s = SamplableSet(2, 1)
 
+    def test_throw_error_4(self):
+        with pytest.raises(RuntimeError):
+            s = SamplableSet(1, 2)
+            s.size()
 
-
+    def test_throw_error_5(self):
+        with pytest.raises(RuntimeError):
+            s = SamplableSet(1, 2)
+            s.total_weight()
