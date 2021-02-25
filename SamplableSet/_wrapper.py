@@ -23,6 +23,18 @@
 from _SamplableSet import *
 from random import randint
 
+#wrap some methods to return python type errors
+def error_decorator(error_type):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                val = func(*args,**kwargs)
+            except IndexError as err:
+                raise error_type(err)
+            return val
+        return wrapper
+    return decorator
+
 template_classes = {
     'int': IntSamplableSet,
     'str': StringSamplableSet,
@@ -127,6 +139,11 @@ class SamplableSet:
         """
         for func_name in cpp_methods:
             setattr(self, func_name, getattr(self._samplable_set, func_name))
+        #decorates method to return python error
+        self.next = error_decorator(StopIteration)(self.next)
+        self.init_iterator = error_decorator(StopIteration)(self.init_iterator)
+        self.get_weight = error_decorator(KeyError)(self.get_weight)
+        self.cpp_sample = error_decorator(KeyError)(self._samplable_set.sample)
 
     def __contains__(self, element):
         return True if self.count(element) else False
@@ -190,18 +207,18 @@ class SamplableSet:
         Returns: An element of the set or a generator of 'n_samples' elements.
         """
         if n_samples == 1:
-            x = self._samplable_set.sample()
-            if not replace and x is not None:
-                self._samplable_set.erase(x[0])
+            x = self.cpp_sample()
+            if not replace:
+                self.erase(x[0])
             return x
         else:
             return self.sample_generator(n_samples, replace)
 
     def sample_generator(self, n_samples, replace):
         for _ in range(n_samples):
-            x = self._samplable_set.sample()
-            if not replace and x is not None:
-                self._samplable_set.erase(x[0])
+            x = self.cpp_sample()
+            if not replace:
+                self.erase(x[0])
             yield x
 
     def element_generator(self):

@@ -35,7 +35,6 @@
 #include <time.h>
 #include <string>
 #include <stdexcept>
-#include <pybind11/pybind11.h>
 
 namespace sset
 {//start of namespace sset
@@ -191,7 +190,7 @@ std::pair<T,double> SamplableSet<T>::sample() const
     else
     {
         std::string out = "The Samplableset is empty";
-        throw pybind11::key_error(out);
+        throw std::out_of_range(out);
     }
 
     return propensity_group_vector_.at(group_index).at(in_group_index);
@@ -225,7 +224,7 @@ std::pair<T,double>SamplableSet<T>::sample_ext_RNG(ExtRNG& gen) const
     else
     {
         std::string out = "The Samplableset is empty";
-        throw pybind11::key_error(out);
+        throw std::out_of_range(out);
     }
 
     return propensity_group_vector_.at(group_index).at(in_group_index);
@@ -244,7 +243,7 @@ double SamplableSet<T>::get_weight(const T& element) const
      else
     {
         std::string out = "Key error, the element is not in the set";
-        throw pybind11::key_error(out);
+        throw std::out_of_range(out);
     }
 
     return weight;
@@ -336,7 +335,7 @@ void SamplableSet<T>::next()
     }
     if (iterator_ == propensity_group_vector_.back().end())
     {
-        throw pybind11::stop_iteration("");
+        throw std::out_of_range("");
     }
 }
 
@@ -370,7 +369,7 @@ void SamplableSet<T>::init_iterator()
     //throw stop iteration error if empty
     if (iterator_ == propensity_group_vector_.back().end())
     {
-        throw pybind11::stop_iteration("");
+        throw std::out_of_range("");
     }
 }
 
