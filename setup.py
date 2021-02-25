@@ -42,7 +42,7 @@ from setuptools.command.build_ext import build_ext
 import sys
 import setuptools
 
-__version__ = '2.1.5'
+__version__ = '2.1.6'
 
 
 class get_pybind_include(object):
