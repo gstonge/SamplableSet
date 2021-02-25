@@ -31,11 +31,11 @@
 #include <utility>
 #include <random>
 #include <iostream>
-#include <optional>
 #include <stdio.h>
 #include <time.h>
 #include <string>
 #include <stdexcept>
+#include <pybind11/pybind11.h>
 
 namespace sset
 {//start of namespace sset
@@ -76,12 +76,12 @@ public:
     bool empty() const {return size() == 0;}
     std::size_t inline count(const T& element) const
         {return position_map_.count(element);}
-    std::optional<std::pair<T,double> > sample() const;
+    std::pair<T,double> sample() const;
     template <typename ExtRNG>
-    std::optional<std::pair<T,double> > sample_ext_RNG(ExtRNG& gen) const;
+    std::pair<T,double> sample_ext_RNG(ExtRNG& gen) const;
     double total_weight() const {return sampling_tree_.get_value();}
-    std::optional<double> get_weight(const T& element) const;
-    std::optional<std::pair<T,double> > get_at_iterator() const;
+    double get_weight(const T& element) const;
+    std::pair<T,double> get_at_iterator() const;
 
     //Mutators
     void insert(const T& element, double weight = 0);
@@ -166,13 +166,14 @@ void SamplableSet<T>::weight_checkup(double weight) const
 
 //sample an element according to its weight
 template <typename T>
-std::optional<std::pair<T,double> > SamplableSet<T>::sample() const
+std::pair<T,double> SamplableSet<T>::sample() const
 {
+    GroupIndex group_index;
+    InGroupIndex in_group_index;
     if (not empty())
     {
-        GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen_));
+        group_index = sampling_tree_.get_leaf_index(random_01_(gen_));
         bool element_not_chosen = true;
-        InGroupIndex in_group_index;
         while (element_not_chosen)
         {
             in_group_index = floor(random_01_(gen_)*propensity_group_vector_.at(
@@ -186,24 +187,27 @@ std::optional<std::pair<T,double> > SamplableSet<T>::sample() const
                 element_not_chosen = false;
             }
         }
-        return propensity_group_vector_.at(group_index).at(in_group_index);
     }
     else
     {
-        return std::nullopt;
+        std::string out = "The Samplableset is empty";
+        throw pybind11::key_error(out);
     }
+
+    return propensity_group_vector_.at(group_index).at(in_group_index);
 }
 
 //sample an element according to its weight using an external RNG
 template <typename T>
 template <typename ExtRNG>
-std::optional<std::pair<T,double> > SamplableSet<T>::sample_ext_RNG(ExtRNG& gen) const
+std::pair<T,double>SamplableSet<T>::sample_ext_RNG(ExtRNG& gen) const
 {
+    GroupIndex group_index;
+    InGroupIndex in_group_index;
     if (not empty())
     {
-        GroupIndex group_index = sampling_tree_.get_leaf_index(random_01_(gen));
+        group_index = sampling_tree_.get_leaf_index(random_01_(gen));
         bool element_not_chosen = true;
-        InGroupIndex in_group_index;
         while (element_not_chosen)
         {
             in_group_index = floor(random_01_(gen)*propensity_group_vector_.at(
@@ -217,27 +221,33 @@ std::optional<std::pair<T,double> > SamplableSet<T>::sample_ext_RNG(ExtRNG& gen)
                 element_not_chosen = false;
             }
         }
-        return propensity_group_vector_.at(group_index).at(in_group_index);
     }
     else
     {
-        return std::nullopt;
+        std::string out = "The Samplableset is empty";
+        throw pybind11::key_error(out);
     }
+
+    return propensity_group_vector_.at(group_index).at(in_group_index);
 }
 
 //get the weight of an element if it exists
 template <typename T>
-std::optional<double> SamplableSet<T>::get_weight(const T& element) const
+double SamplableSet<T>::get_weight(const T& element) const
 {
+    double weight;
     if(count(element))
     {
         const SSetPosition& position = position_map_.at(element);
-        return (propensity_group_vector_[position.first][position.second]).second;
+        weight = (propensity_group_vector_[position.first][position.second]).second;
     }
-    else
+     else
     {
-        return std::nullopt;
+        std::string out = "Key error, the element is not in the set";
+        throw pybind11::key_error(out);
     }
+
+    return weight;
 }
 
 //insert an element in the set with its associated weight
@@ -324,37 +334,45 @@ void SamplableSet<T>::next()
                 iterator_group_index_].begin();
         }
     }
+    if (iterator_ == propensity_group_vector_.back().end())
+    {
+        throw pybind11::stop_iteration("");
+    }
 }
 
 template <typename T>
-std::optional<std::pair<T,double> > SamplableSet<T>::get_at_iterator() const
+std::pair<T,double> SamplableSet<T>::get_at_iterator() const
 {
-    if (iterator_ != (propensity_group_vector_.back()).end())
+    if (iterator_ == (propensity_group_vector_.back()).end())
     {
-        return *iterator_;
+        std::string out = "At the end of the SamplableSet";
+        throw std::out_of_range(out);
     }
-    else
-    {
-        return std::nullopt;
-    }
+
+    return *iterator_;
 }
 
 template <typename T>
 void SamplableSet<T>::init_iterator()
+{
+    iterator_group_index_ = 0;
+    iterator_ = propensity_group_vector_[0].begin();
+    //it is possible the group is empty, look for subsequent containers
+    //note that if the set is empty, it will just point to the end
+    while (iterator_ == propensity_group_vector_[
+            iterator_group_index_].end() and
+            iterator_group_index_ < propensity_group_vector_.size()-1)
     {
-        iterator_group_index_ = 0;
-        iterator_ = propensity_group_vector_[0].begin();
-        //it is possible the group is empty, look for subsequent containers
-        //note that if the set is empty, it will just point to the end
-        while (iterator_ == propensity_group_vector_[
-                iterator_group_index_].end() and
-                iterator_group_index_ < propensity_group_vector_.size()-1)
-        {
-            iterator_group_index_ += 1;
-            iterator_ = propensity_group_vector_[
-                iterator_group_index_].begin();
-        }
+        iterator_group_index_ += 1;
+        iterator_ = propensity_group_vector_[
+            iterator_group_index_].begin();
     }
+    //throw stop iteration error if empty
+    if (iterator_ == propensity_group_vector_.back().end())
+    {
+        throw pybind11::stop_iteration("");
+    }
+}
 
 }//end of namespace sset
 

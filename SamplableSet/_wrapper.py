@@ -205,10 +205,13 @@ class SamplableSet:
             yield x
 
     def element_generator(self):
-        self.init_iterator()
-        while self.get_at_iterator() is not None:
-            yield self.get_at_iterator()
-            self.next()
+        try:
+            self.init_iterator()
+            while True:
+                yield self.get_at_iterator()
+                self.next()
+        except StopIteration:
+            pass
 
     @staticmethod
     def seed(seed_value):

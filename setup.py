@@ -42,7 +42,7 @@ from setuptools.command.build_ext import build_ext
 import sys
 import setuptools
 
-__version__ = '2.1.4'
+__version__ = '2.1.5'
 
 
 class get_pybind_include(object):
@@ -92,14 +92,14 @@ def has_flag(compiler, flagname):
 
 
 def cpp_flag(compiler):
-    """Return the -std=c++17 compiler flag.
+    """Return the -std=c++11 compiler flag.
 
-    c++17 is required.
+    c++11 is required.
     """
-    if has_flag(compiler, '-std=c++17'):
-        return '-std=c++17'
+    if has_flag(compiler, '-std=c++11'):
+        return '-std=c++11'
     else:
-        raise RuntimeError('Unsupported compiler -- at least C++17 support '
+        raise RuntimeError('Unsupported compiler -- at least C++11 support '
                            'is needed!')
 
 
