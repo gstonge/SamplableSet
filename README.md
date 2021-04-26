@@ -18,7 +18,7 @@ Changes are listed in the [changelog](CHANGELOG.md).
 
 ## Requirements and dependencies
 
-* A compiler with C++17 support
+* A compiler with C++11 support
 * `python3`
 * `pybind11` version >= 2.2
 
@@ -167,8 +167,7 @@ for element, weight in s.sample(n_samples=5):
 ```
 
 It is possible to sample without replacement as well. If `n_samples` is larger
-than the number of elements, the generator returns `None` for the remaining
-samples. It is not safe to unpack directly, unless `n_samples <= len(s)`.
+than the number of elements, it raises a `KeyError`.
 
 ```python
 elements_weights = {3:33.3}
@@ -176,7 +175,7 @@ s = SamplableSet(1, 100, elements_weights)
 x_list = []
 for x in s.sample(n_samples=2,replace=False):
     x_list.append(x)
-# x_list == [(3,33.3),None] is True
+# KeyError is raised
 ```
 
 ### Copy

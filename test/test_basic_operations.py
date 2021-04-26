@@ -18,7 +18,9 @@ class TestContainerModification:
         elements_weights = zip(elements, weights)
         s = SamplableSet(1, 100, elements_weights)
         s.clear()
-        assert s.total_weight() == 0 and len(s) == 0 and s.sample() is None and s.empty()
+        assert s.total_weight() == 0 and len(s) == 0 and s.empty()
+        with pytest.raises(KeyError):
+            s.sample()
 
     def test_insert(self):
          s = SamplableSet(1, 10)
@@ -39,7 +41,8 @@ class TestContainerModification:
     def test_get_weight_no_item(self):
          s = SamplableSet(1, 10)
          s['a'] = 2.
-         assert s['b'] is None
+         with pytest.raises(KeyError):
+            s['b']
 
     def test_set_weight(self):
          s = SamplableSet(1, 10)
@@ -47,18 +50,18 @@ class TestContainerModification:
          s['a'] = 3.
          assert s['a'] == 3. and len(s) == 1 and s.total_weight() == 3.
 
-    def test_throw_error_1(self):
+    def test_weight_out_of_bound(self):
         with pytest.raises(ValueError):
             s = SamplableSet(1, 10)
             s['a'] = 0.5
 
-    def test_throw_error_2(self):
+    def test_weight_out_of_bound_2(self):
         with pytest.raises(ValueError):
             s = SamplableSet(1, 10)
             s['a'] = 2.
             s['b'] = 0.5
 
-    def test_throw_error_3(self):
+    def test_weight_out_of_bound_3(self):
         with pytest.raises(ValueError):
             s = SamplableSet(1, 10)
             s['a'] = 2.
@@ -96,14 +99,25 @@ class TestSampling:
         assert element == 'a' and weight == 33.3 and len(s) == 0
 
     def test_sampling_no_replacement_generator(self):
-        elements = ['a']
-        weights = [33.3]
+        elements = ['a','b']
+        weights = [33.3,50.]
         elements_weights = zip(elements, weights)
         s = SamplableSet(1, 100, elements_weights)
         sample_list = []
-        for sample in s.sample(n_samples=5,replace=False):
+        for sample in s.sample(n_samples=2,replace=False):
             sample_list.append(sample)
-        assert sample_list == [('a',33.3),None,None,None,None] and len(s) == 0
+        assert sample_list[0][0] in elements and sample_list[1][0] in elements
+        assert len(s) == 0
+
+    def test_sampling_no_replacement_generator_error(self):
+        elements = ['a','b']
+        weights = [33.3,50.]
+        elements_weights = zip(elements, weights)
+        s = SamplableSet(1, 100, elements_weights)
+        sample_list = []
+        with pytest.raises(KeyError):
+            for sample in s.sample(n_samples=3,replace=False):
+                sample_list.append(sample)
 
 
 class TestInitialization:
