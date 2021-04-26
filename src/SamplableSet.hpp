@@ -189,7 +189,7 @@ std::pair<T,double> SamplableSet<T>::sample() const
     }
     else
     {
-        std::string out = "The Samplableset is empty";
+        std::string out = "The samplable set is empty";
         throw std::out_of_range(out);
     }
 
@@ -223,7 +223,7 @@ std::pair<T,double>SamplableSet<T>::sample_ext_RNG(ExtRNG& gen) const
     }
     else
     {
-        std::string out = "The Samplableset is empty";
+        std::string out = "The samplable set is empty";
         throw std::out_of_range(out);
     }
 

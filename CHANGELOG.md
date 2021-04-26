@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) since v2.0.0.
 
+## [v2.2.0] - 2021-04-26
+
+### Changed
+- Now compatible with C++11.
+- When sampling an empty set, it raises a `KeyError` instead or returning a
+  `None`. This also affects the behavior of sampling without replacement when
+  `n_samples`is larger than the set size.
+- Other forbidden operations raises an error as well instead of returning a
+  `None`.
+
+
 ## [v2.1.4] - 2021-02-02
 ### Fixed
 - The `__str__` method now works with SamplableSet of unspecified underlying
@@ -93,6 +104,7 @@ Merged the fork from jsleb333, providing a pythonic wrapper.
 
 First release with the old wrapper using C++ style.
 
+[v2.2.0]: https://github.com/gstonge/SamplableSet/compare/v2.1.4...v2.2.0
 [v2.1.4]: https://github.com/gstonge/SamplableSet/compare/v2.1.3...v2.1.4
 [v2.1.3]: https://github.com/gstonge/SamplableSet/compare/v2.1.2...v2.1.3
 [v2.1.2]: https://github.com/gstonge/SamplableSet/compare/v2.1.1...v2.1.2
