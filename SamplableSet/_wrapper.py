@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 from _SamplableSet import *
-from random import randint
 
 #wrap some methods to return python type errors
 def error_decorator(error_type):
