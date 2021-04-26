@@ -85,7 +85,6 @@ class SamplableSet:
         if elements_weights:
             if isinstance(elements_weights, dict):
                 elements_weights = elements_weights.items()
-
             first_element, first_weight = next(iter(elements_weights))
             # Inferring cpp_type
             if self.cpp_type is None:
