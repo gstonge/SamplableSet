@@ -86,9 +86,10 @@ class SamplableSet:
             if isinstance(elements_weights, dict):
                 elements_weights = elements_weights.items()
 
-            # Inferring cpp_type
             first_element, first_weight = next(iter(elements_weights))
-            self._infer_type(first_element)
+            # Inferring cpp_type
+            if self.cpp_type is None:
+                self._infer_type(first_element)
 
         # Instanciate the set
         if self.cpp_type is not None:
