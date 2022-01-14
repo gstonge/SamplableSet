@@ -8,3 +8,6 @@ add_library(samplableset
     HashPropensity.cpp
     SamplableSet.cpp
 )
+
+# Required to link SamplableSet in a shared library (e.g. other pybind module)
+set_target_properties(samplableset PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
