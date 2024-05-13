@@ -202,6 +202,7 @@ class SamplableSet:
 
         Args:
             n_samples (int, optional): If equal to 1, returns one element. If greater than 1, returns a generator that will return 'n_samples' elements.
+            replace (bool, optional): If True (default), sample with replacement. If sampling without replacement, by default erases the elements from the set.
 
         Returns: An element of the set or a generator of 'n_samples' elements.
         """
